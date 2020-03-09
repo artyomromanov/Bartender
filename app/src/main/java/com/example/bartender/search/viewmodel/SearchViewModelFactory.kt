@@ -2,6 +2,7 @@ package com.example.bartender.search.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.bartender.search.database.CocktailDatabase
 import com.example.bartender.search.model.Repository
 import javax.inject.Inject
 

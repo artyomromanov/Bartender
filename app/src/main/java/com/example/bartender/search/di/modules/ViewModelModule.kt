@@ -3,6 +3,7 @@ package com.example.bartender.search.di.modules
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.bartender.HomeActivity
+import com.example.bartender.search.database.CocktailDatabase
 import com.example.bartender.search.di.scopes.ActivityScope
 import com.example.bartender.search.model.CocktailsClient
 import com.example.bartender.search.model.Repository
@@ -14,13 +15,13 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class ViewModelModule(private val fragment: SearchFragment) {
+class ViewModelModule(private val fragment: Fragment) {
 
     @ActivityScope
     @Provides
-    fun provideRepository(client : CocktailsClient) : Repository {
+    fun provideRepository(client : CocktailsClient, database: CocktailDatabase) : Repository {
 
-        return RepositoryImpl(client)
+        return RepositoryImpl(client, database)
 
     }
 

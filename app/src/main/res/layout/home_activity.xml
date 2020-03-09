@@ -8,7 +8,6 @@
     tools:context=".HomeActivity"
     android:orientation="vertical">
 
-
     <FrameLayout
 
         android:id="@+id/fragment_container"

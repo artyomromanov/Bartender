@@ -8,4 +8,6 @@
     <string name="txt_search_item_description">Description</string>
     <string name="txt_search_error">Error</string>
     <string name="txt_search_btn_retry">RETRY</string>
+    <string name="txt_search_sw_query_hint">Search all cocktails…</string>
+    <string name="txt_search_empty_error">Please enter something into the search field</string>
 </resources>
