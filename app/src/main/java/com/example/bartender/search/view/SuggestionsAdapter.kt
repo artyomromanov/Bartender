@@ -1,21 +1,21 @@
 package com.example.bartender.search.view
 
+import android.text.SpannableString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bartender.R
-import com.example.bartender.SMALL_IMAGE_ADDITION
-import com.example.bartender.search.model.Drink
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.search_item.view.*
+import kotlinx.android.synthetic.main.suggestion_item.view.*
 
-class SearchAdapter(private val list: List<Drink>, private val listener: RecyclerViewClickListener) :
-    RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
+class SuggestionsAdapter(private val list: List<SpannableString>, private val listener: RecyclerViewClickListener) :
+    RecyclerView.Adapter<SuggestionsAdapter.ViewHolder>() {
+
+    fun getListSize() : Int = list.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
-        return ViewHolder(parent.populateList(R.layout.search_item))
+        return ViewHolder(parent.populateList(R.layout.suggestion_item))
 
     }
 
@@ -35,15 +35,16 @@ class SearchAdapter(private val list: List<Drink>, private val listener: Recycle
 
         fun bind(position: Int) {
 
-            itemView.tv_name.text = list[position].strDrink
-
-            val fullDrinkUrl = list[position].strDrinkThumb + SMALL_IMAGE_ADDITION
-            Picasso.get().load(fullDrinkUrl).into(itemView.iv_thumb)
+            itemView.tv_suggestion.text = list[position]
 
             itemView.setOnClickListener {
-                listener.onCocktailItemClicked(it)
+
+                listener.onSuggestionItemClicked(list[position].toString())
+
             }
+
         }
+
     }
 
     private fun ViewGroup.populateList(resourceId: Int): View {

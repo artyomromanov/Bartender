@@ -11,13 +11,13 @@ interface CocktailsDao {
     @Query("SELECT * FROM favourites_table")
     fun getFavourites(): Single<List<Drink>>
 
-    @Query("SELECT * FROM favourites_table")
-    fun getLastSearchResults(): Single<List<Drink>>
+    @Query("SELECT search_query FROM search_results WHERE search_query LIKE '%' || :query  || '%'")
+    fun getSuggestions(query: String): Single<List<String>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addResult(list : List<Drink>): Completable
+    fun addFavourite(list : List<Drink>): Completable
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun addSearchResult(result: SearchResult): Completable
 
 }

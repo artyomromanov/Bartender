@@ -20,20 +20,20 @@ class RepositoryImpl @Inject constructor(private val client: CocktailsClient, pr
 
     }
 
-    override fun getLastSearchResults(): Single<List<Drink>> {
+    override fun getSuggestions(query: String): Single<List<String>> {
 
         return database
             .cocktailsDao()
-            .getLastSearchResults()
+            .getSuggestions(query)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 
     }
 
-    override fun saveLastSearchResults(list: List<Drink>): Completable {
+    override fun saveLastSearchResult(result: SearchResult): Completable {
         return database
             .cocktailsDao()
-            .addSearchResult(SearchResult(list))
+            .addSearchResult(result)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }

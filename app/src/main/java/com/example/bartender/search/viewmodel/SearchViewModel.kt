@@ -3,6 +3,7 @@ package com.example.bartender.search.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.bartender.search.database.SearchResult
 import com.example.bartender.search.model.Drink
 import com.example.bartender.search.model.Repository
 
@@ -12,9 +13,11 @@ class SearchViewModel(private val repository: Repository) : ViewModel() {
 
     private val searchData = MutableLiveData<List<Drink>>()
     private val errorData = MutableLiveData<String>()
-    private val savedSearchData = MutableLiveData<List<Drink>>()
+
+    private val savedSearchSuggestions = MutableLiveData<List<String>>()
+
     private val databaseErrorData = MutableLiveData<String>()
-    private val databaseDataSaved = MutableLiveData<Boolean>()
+    private val databaseDataSavedSuccess = MutableLiveData<Boolean>()
 
     fun getSearchResults(query: String) {
         disposable.add(
@@ -22,22 +25,24 @@ class SearchViewModel(private val repository: Repository) : ViewModel() {
         )
     }
 
-    fun getLastSavedSearch() {
+    fun getSuggestions(query: String = "") {
         disposable.add(
-            repository.getLastSearchResults().subscribe({ data -> savedSearchData.value = data }, { error -> databaseErrorData.value = error.message })
+            repository.getSuggestions(query).subscribe({ data -> savedSearchSuggestions.value = data }, { error -> databaseErrorData.value = error.message })
         )
     }
 
-    fun saveCurrentSearchResults(list: List<Drink>) {
+    fun saveCurrentSearchResults(result: SearchResult) {
         disposable.add(
-            repository.saveLastSearchResults(list).subscribe({ databaseDataSaved.value = true }, { databaseErrorData.value = it.message })
+            repository.saveLastSearchResult(result).subscribe({ databaseDataSavedSuccess.value = true }, { databaseErrorData.value = it.message })
         )
     }
 
-    fun getSearchData() = searchData as LiveData<List<Drink>>
+    fun getSearchResultsLiveData() = searchData as LiveData<List<Drink>>
     fun getErrorData() = errorData as LiveData<String>
-    fun getSavedSearchData() = savedSearchData as LiveData<List<Drink>>
+
+    fun getSuggestionsLiveData() = savedSearchSuggestions as LiveData<List<String>>
+
     fun getDatabaseErrorData() = databaseErrorData as LiveData<String>
-    fun getDatabaseDataSaved() = databaseDataSaved as LiveData<Boolean>
+    fun getDatabaseDataSaved() = databaseDataSavedSuccess as LiveData<Boolean>
 
 }

@@ -10,4 +10,9 @@
     <string name="txt_search_btn_retry">RETRY</string>
     <string name="txt_search_sw_query_hint">Search all cocktails…</string>
     <string name="txt_search_empty_error">Please enter something into the search field</string>
+    <string name="txt_search_suggestion_item">Suggestion</string>
+    <string name="txt_search_no_suggestions"><![CDATA[<…no current suggestions…>]]></string>
+    <string name="txt_search_recent_searches">Recently searched for…</string>
+    <string name="txt_search_content_description">thumbnails</string>
+    <string name="txt_search_btn_add">ADD</string>
 </resources>

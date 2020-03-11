@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 import com.example.bartender.search.model.Drink
 
 @TypeConverters(Converters::class)
-@Database(entities = [Drink::class/*, FavouriteDrinks::class*/, SearchResult::class], version = 4, exportSchema = false)
+@Database(entities = [Drink::class/*, FavouriteDrinks::class*/, SearchResult::class], version = 6, exportSchema = false)
 abstract class CocktailDatabase : RoomDatabase() {
 
     abstract fun cocktailsDao(): CocktailsDao
