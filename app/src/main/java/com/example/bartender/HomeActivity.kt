@@ -3,7 +3,7 @@ package com.example.bartender
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.bartender.favourites.FavouritesFragment
+import com.example.bartender.favourites.view.FavouritesFragment
 import com.example.bartender.search.view.SearchFragment
 import com.example.bartender.shake.ShakeFragment
 import kotlinx.android.synthetic.main.home_activity.*

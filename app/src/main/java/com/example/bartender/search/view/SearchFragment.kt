@@ -13,16 +13,20 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bartender.MyApp
 import com.example.bartender.R
-import com.example.bartender.search.database.SearchResult
-import com.example.bartender.search.di.components.DaggerViewModelComponent
-import com.example.bartender.search.di.modules.ViewModelModule
+import com.example.bartender.di.components.DaggerViewModelComponent
+import com.example.bartender.di.modules.viewmodels.FavouritesViewModelModule
+import com.example.bartender.di.modules.viewmodels.SearchViewModelModule
+import com.example.bartender.favourites.viewmodel.FavouritesViewModel
+import com.example.bartender.search.model.Drink
 import com.example.bartender.search.viewmodel.SearchViewModel
 import kotlinx.android.synthetic.main.search_fragment.*
+import kotlinx.android.synthetic.main.search_fragment.view.*
 import kotlinx.android.synthetic.main.search_item.view.*
 import java.util.*
 import javax.inject.Inject
@@ -31,7 +35,10 @@ import javax.inject.Inject
 class SearchFragment : Fragment(), RecyclerViewClickListener {
 
     @Inject
-    lateinit var model: SearchViewModel
+    lateinit var searchViewModel: SearchViewModel
+
+    @Inject
+    lateinit var favouritesViewModel : FavouritesViewModel
 
     var currentQuery = ""
     private var currentItemSelected: View? = null
@@ -50,11 +57,11 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
         initializeSearchView()
 
-        initializeViewModel()
+        initializeViewModels()
 
         recyclerViewScrollListener()
 
-        with(model) {
+        with(searchViewModel) {
 
             //Initial call to database to show previous searches
             getSuggestions()
@@ -64,7 +71,8 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
                 if (it.isNotEmpty()) {
                     with(rv_suggestions) {
-                        adapter = SuggestionsAdapter(highlightSearchMatch(it, search_view.query.toString()), this@SearchFragment)
+                        if(search_bar == null) println("OMG")
+                        adapter = SuggestionsAdapter(highlightSearchMatch(it, search_bar?.query.toString()), this@SearchFragment)
                         adapter?.notifyDataSetChanged()
                         scheduleLayoutAnimation()
                         showSuggestions()
@@ -76,39 +84,30 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
             //Network call call to retrieve search query and save to DB on success
             getSearchResultsLiveData().observe(viewLifecycleOwner, Observer {
-
                 with(rv_search) {
-
                     adapter = SearchAdapter(it, this@SearchFragment)
                     adapter?.notifyDataSetChanged()
                     scheduleLayoutAnimation()
-
                 }
-                model.saveCurrentSearchResults(SearchResult(search_view.query.toString().toLowerCase(Locale.ROOT).trim(), it))
+                //searchViewModel.saveCurrentSearchResult(SearchResult(search_view.query.toString().toLowerCase(Locale.ROOT).trim(), it))
                 status(2)
-
             })
 
             //Observing Network Error Data
 
             getErrorData().observe(viewLifecycleOwner, Observer {
-
-                tv_error.text = it
+                search_tv_error.text = it
                 status(3)
-
             })
 
             //Observing Database Error Data
             getDatabaseErrorData().observe(viewLifecycleOwner, Observer {
-
-                tv_error.text = it
+                search_tv_error.text = it
                 status(3)
-
             })
 
             //Observing Database @Insert success
             getDatabaseDataSaved().observe(viewLifecycleOwner, Observer {
-
                 if (it) {
                     Toast.makeText(this@SearchFragment.context, "Successfully saved search to database!", Toast.LENGTH_SHORT).show()
                 } else {
@@ -116,14 +115,37 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
                 }
             })
         }
+
+        favouritesViewModel.getFavouritesDataSaveSuccess().observe(viewLifecycleOwner, Observer {
+            if(it){
+                Toast.makeText(this@SearchFragment.context, "Successfully added to favourites!", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+    }
+    private fun initializeViewModels() {
+       DaggerViewModelComponent
+           .builder()
+           .appComponent((activity?.application as MyApp).component())
+           .searchViewModelModule(SearchViewModelModule(this))
+           .favouritesViewModelModule(FavouritesViewModelModule(this))
+           .build()
+           .injectSearchFragment(this)
+
     }
     //Plays the correct animation for select or deselect item in the search list
-    private fun selectMenuItem(view: View, select: Boolean) {
+    private fun selectMenuItem(view: View, select: Boolean, drink: Drink? = null) {
         if(select){
             with(view) {
                 submenu_layout.visibility = View.VISIBLE
                 main_menu_layout.animation = AnimationUtils.loadAnimation(context, R.anim.main_menu_animation_collapse)
                 submenu_layout.animation = AnimationUtils.loadAnimation(context, R.anim.submenu_item_animation_fade_in)
+
+                submenu_layout.search_btn_add.setOnClickListener {
+                    if (drink != null) {
+                        favouritesViewModel.addFavourite(drink)
+                    }
+                }
             }
         }else{
             with(view) {
@@ -143,7 +165,7 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
         }
     }
     //Contains the logic for menu selecting and deselecting menu items
-    override fun onCocktailItemClicked(view: View) {
+    override fun onCocktailItemClicked(view: View, drink: Drink) {
 
         //If the clicked item is NOT the focused item
         if (view.holder_layout != currentItemSelected) {
@@ -152,7 +174,7 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
                 //The other menu item fades out
                 currentItemSelected?.also { selectMenuItem(it, false) }
             }
-            selectMenuItem(view, true) //Select item
+            selectMenuItem(view, true, drink) //Select item
             currentItemSelected = view.holder_layout
 
         } else { //If the clicked item IS the focused item
@@ -161,29 +183,22 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
         }
     }
 
-
     override fun onSuggestionItemClicked(suggestion: String) {
         currentQuery = suggestion
-        search_view.setQuery(suggestion, true)
-    }
-
-    private fun initializeViewModel() {
-        DaggerViewModelComponent.builder().appComponent(
-            (activity?.application as MyApp).component()
-        ).viewModelModule(ViewModelModule(this)).build().injectSearchFragment(this)
+        search_bar.setQuery(suggestion, true)
     }
 
     //Contains the logic for searchView
     private fun initializeSearchView() {
 
-        with(search_view) {
+        with(search_bar) {
 
             isSubmitButtonEnabled = true
 
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String): Boolean {
-                    model.getSearchResults(query)
+                    searchViewModel.getSearchResults(query)
                     status(1)
                     showSuggestions(false)
                     return true
@@ -193,10 +208,10 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
                     if (newText.isBlank()) {
                         //hide search results if query is empty
-                        rv_search.visibility = View.GONE
+                        //rv_search.visibility = View.GONE
                     }
                     //Get new suggestion data, unless just navigated from one
-                    if (newText != currentQuery) model.getSuggestions(newText)
+                    if (newText != currentQuery) searchViewModel.getSuggestions(newText)
                     return true
                 }
             })
@@ -218,17 +233,17 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
     private fun highlightSearchMatch(list: List<String>, query: String): List<SpannableString> {
 
         val highlightedList: MutableList<SpannableString> = ArrayList()
-        val foregroundColorSpan = ForegroundColorSpan(resources.getColor(R.color.black))
-        val backgroundColorSpan = BackgroundColorSpan(resources.getColor(R.color.emerald_green))
+        val foregroundColorSpan = ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.black))
+        val backgroundColorSpan = BackgroundColorSpan(ContextCompat.getColor(context!!, R.color.emerald_green))
 
         for (item in list) {
             val spannableString = SpannableString(item)
-            val indexOfmatch = item.findAnyOf(listOf(query), 0, true)?.first
+            val indexOfMatch = item.findAnyOf(listOf(query), 0, true)?.first
 
-            if (indexOfmatch != null) {
+            if (indexOfMatch != null) {
 
-                spannableString.setSpan(foregroundColorSpan, indexOfmatch, indexOfmatch + query.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-                spannableString.setSpan(backgroundColorSpan, indexOfmatch, indexOfmatch + query.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                spannableString.setSpan(foregroundColorSpan, indexOfMatch, indexOfMatch + query.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+                spannableString.setSpan(backgroundColorSpan, indexOfMatch, indexOfMatch + query.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
 
                 highlightedList.add(spannableString)
             }
@@ -243,34 +258,34 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
             1 -> { //Initial state - loading
 
-                status_container.visibility = View.VISIBLE
-                tv_error.visibility = View.GONE
-                pb_progress.visibility = View.VISIBLE
-                btn_retry.visibility = View.GONE
+                search_status_container.visibility = View.VISIBLE
+                search_tv_error.visibility = View.GONE
+                search_pb_progress.visibility = View.VISIBLE
+                search_btn_retry.visibility = View.GONE
 
             }
 
             2 -> {  //Network Success
-                status_container.visibility = View.GONE
-                pb_progress.visibility = View.GONE
-                btn_retry.visibility = View.GONE
-                tv_error.visibility = View.GONE
+                search_status_container.visibility = View.GONE
+                search_pb_progress.visibility = View.GONE
+                search_btn_retry.visibility = View.GONE
+                search_tv_error.visibility = View.GONE
                 rv_search.visibility = View.VISIBLE
                 hideSoftKeyboard(this)
 
             }
 
             3 -> {  //Error
-                status_container.visibility = View.VISIBLE
-                pb_progress.visibility = View.GONE
-                btn_retry.visibility = View.VISIBLE
-                tv_error.visibility = View.VISIBLE
+                search_status_container.visibility = View.VISIBLE
+                search_pb_progress.visibility = View.GONE
+                search_btn_retry.visibility = View.VISIBLE
+                search_tv_error.visibility = View.VISIBLE
                 rv_search.visibility = View.GONE
                 hideSoftKeyboard(this)
 
-                btn_retry.setOnClickListener {
+                search_btn_retry.setOnClickListener {
 
-                    model.getSearchResults(search_view.query.toString())
+                    searchViewModel.getSearchResults(search_bar.query.toString())
                     status(1)
 
                 }

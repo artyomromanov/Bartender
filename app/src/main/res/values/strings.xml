@@ -15,4 +15,8 @@
     <string name="txt_search_recent_searches">Recently searched for…</string>
     <string name="txt_search_content_description">thumbnails</string>
     <string name="txt_search_btn_add">ADD</string>
+    <string name="txt_favourites_my_favourite_cocktails">My Favourite Cocktails</string>
+    <string name="txt_favourites_tip_content">All your favourite cocktails are stored here. Try the shaker, to learn them!</string>
+    <string name="txt_favourites_tv_description">Description</string>
+    <string name="txt_favourites_saved_success">Successfully saved as favourite!</string>
 </resources>

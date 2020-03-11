@@ -1,4 +1,4 @@
-package com.example.bartender.search.di.modules
+package com.example.bartender.di.modules
 
 import com.example.bartender.BASE_URL
 import com.example.bartender.search.model.CocktailsClient
@@ -9,7 +9,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 @Module
 class NetworkModule {

@@ -1,10 +1,19 @@
-package com.example.bartender.search.model
+package com.example.bartender
 
 import com.example.bartender.search.database.SearchResult
+import com.example.bartender.search.model.Drink
 import io.reactivex.Completable
 import io.reactivex.Single
 
 interface Repository {
+
+    interface Favourites {
+
+        fun getFavourites() : Single<List<Drink>>
+
+        fun addFavourite(drink : Drink) : Completable
+
+    }
 
     fun getSearchResults(query : String) : Single<List<Drink>>
 
@@ -13,3 +22,4 @@ interface Repository {
     fun saveLastSearchResult(result: SearchResult) : Completable
 
 }
+

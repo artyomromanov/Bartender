@@ -41,7 +41,7 @@ class SearchAdapter(private val list: List<Drink>, private val listener: Recycle
             Picasso.get().load(fullDrinkUrl).into(itemView.iv_thumb)
 
             itemView.setOnClickListener {
-                listener.onCocktailItemClicked(it)
+                listener.onCocktailItemClicked(it, list[position])
             }
         }
     }

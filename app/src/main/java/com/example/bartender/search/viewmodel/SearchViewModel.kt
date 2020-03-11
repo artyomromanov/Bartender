@@ -5,19 +5,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.bartender.search.database.SearchResult
 import com.example.bartender.search.model.Drink
-import com.example.bartender.search.model.Repository
+import com.example.bartender.Repository
 
 class SearchViewModel(private val repository: Repository) : ViewModel() {
 
     private val disposable = io.reactivex.disposables.CompositeDisposable()
 
-    private val searchData = MutableLiveData<List<Drink>>()
+    private var searchData = MutableLiveData<List<Drink>>()
     private val errorData = MutableLiveData<String>()
 
     private val savedSearchSuggestions = MutableLiveData<List<String>>()
 
     private val databaseErrorData = MutableLiveData<String>()
     private val databaseDataSavedSuccess = MutableLiveData<Boolean>()
+
+    private val favouritesData = MutableLiveData<List<Drink>>()
+
+
 
     fun getSearchResults(query: String) {
         disposable.add(
@@ -31,7 +35,7 @@ class SearchViewModel(private val repository: Repository) : ViewModel() {
         )
     }
 
-    fun saveCurrentSearchResults(result: SearchResult) {
+    fun saveCurrentSearchResult(result: SearchResult) {
         disposable.add(
             repository.saveLastSearchResult(result).subscribe({ databaseDataSavedSuccess.value = true }, { databaseErrorData.value = it.message })
         )

@@ -8,16 +8,24 @@ import io.reactivex.Single
 @Dao
 interface CocktailsDao {
 
-    @Query("SELECT * FROM favourites_table")
-    fun getFavourites(): Single<List<Drink>>
+    @Dao
+    interface Search {
 
-    @Query("SELECT search_query FROM search_results WHERE search_query LIKE '%' || :query  || '%'")
-    fun getSuggestions(query: String): Single<List<String>>
+        @Query("SELECT search_query FROM search_results WHERE search_query LIKE '%' || :query  || '%'")
+        fun getSuggestions(query: String): Single<List<String>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addFavourite(list : List<Drink>): Completable
+        @Insert(onConflict = OnConflictStrategy.IGNORE)
+        fun addSearchResult(result: SearchResult): Completable
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addSearchResult(result: SearchResult): Completable
+    }
+    @Dao
+    interface Favourites {
 
+        @Query("SELECT * FROM favourites_table")
+        fun getFavourites(): Single<List<Drink>>
+
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        fun addFavourite(drink: Drink): Completable
+
+    }
 }

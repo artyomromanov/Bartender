@@ -1,10 +1,10 @@
 package com.example.bartender
 
 import android.app.Application
-import com.example.bartender.search.di.components.AppComponent
-import com.example.bartender.search.di.components.DaggerAppComponent
-import com.example.bartender.search.di.modules.DatabaseModule
-import com.example.bartender.search.di.modules.NetworkModule
+import com.example.bartender.di.components.AppComponent
+import com.example.bartender.di.components.DaggerAppComponent
+import com.example.bartender.di.modules.DatabaseModule
+import com.example.bartender.di.modules.NetworkModule
 
 class MyApp : Application(){
 

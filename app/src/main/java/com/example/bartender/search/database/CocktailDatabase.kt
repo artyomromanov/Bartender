@@ -11,7 +11,8 @@ import com.example.bartender.search.model.Drink
 @Database(entities = [Drink::class/*, FavouriteDrinks::class*/, SearchResult::class], version = 6, exportSchema = false)
 abstract class CocktailDatabase : RoomDatabase() {
 
-    abstract fun cocktailsDao(): CocktailsDao
+    abstract fun cocktailsDaoSearch(): CocktailsDao.Search
+    abstract fun cocktailsDaoFavourites(): CocktailsDao.Favourites
 
     companion object {
 

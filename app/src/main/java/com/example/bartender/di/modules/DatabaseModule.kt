@@ -1,4 +1,4 @@
-package com.example.bartender.search.di.modules
+package com.example.bartender.di.modules
 
 import android.content.Context
 import com.example.bartender.search.database.CocktailDatabase

@@ -1,4 +1,4 @@
-package com.example.bartender.search.di.scopes
+package com.example.bartender.di.scopes
 
 import javax.inject.Scope
 
