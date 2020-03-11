@@ -117,36 +117,32 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
             })
         }
     }
-
-    private fun selectMenuItem(view: View) {
-
-        with(view) {
-            submenu_layout.visibility = View.VISIBLE
-            main_menu_layout.animation = AnimationUtils.loadAnimation(context, R.anim.main_menu_animation_collapse)
-            submenu_layout.animation = AnimationUtils.loadAnimation(context, R.anim.submenu_item_animation_fade_in)
+    //Plays the correct animation for select or deselect item in the search list
+    private fun selectMenuItem(view: View, select: Boolean) {
+        if(select){
+            with(view) {
+                submenu_layout.visibility = View.VISIBLE
+                main_menu_layout.animation = AnimationUtils.loadAnimation(context, R.anim.main_menu_animation_collapse)
+                submenu_layout.animation = AnimationUtils.loadAnimation(context, R.anim.submenu_item_animation_fade_in)
+            }
+        }else{
+            with(view) {
+                submenu_layout?.animation = AnimationUtils.loadAnimation(context, R.anim.submenu_item_animation_fade_out)
+                main_menu_layout?.animation = AnimationUtils.loadAnimation(context, R.anim.main_menu_animation_expand)
+                submenu_layout?.visibility = View.GONE
+            }
         }
     }
-
-    private fun deselectMenuItem(view: View) {
-
-        with(view) {
-            submenu_layout?.animation = AnimationUtils.loadAnimation(context, R.anim.submenu_item_animation_fade_out)
-            main_menu_layout?.animation = AnimationUtils.loadAnimation(context, R.anim.main_menu_animation_expand)
-            submenu_layout?.visibility = View.GONE
-        }
-    }
-
     //if scrolled, selection cancelled, and selected item is null
     private fun recyclerViewScrollListener() {
         rv_search.setOnScrollChangeListener { _, _, _, _, _ ->
             currentItemSelected?.also {
-                deselectMenuItem(it)
+                selectMenuItem(it, false)
                 currentItemSelected = null
             }
         }
     }
-
-    //
+    //Contains the logic for menu selecting and deselecting menu items
     override fun onCocktailItemClicked(view: View) {
 
         //If the clicked item is NOT the focused item
@@ -154,13 +150,13 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
             //If there is another item which is selected
             if (currentItemSelected != null) {
                 //The other menu item fades out
-                currentItemSelected?.also { deselectMenuItem(it) }
+                currentItemSelected?.also { selectMenuItem(it, false) }
             }
-            selectMenuItem(view) //Select item
+            selectMenuItem(view, true) //Select item
             currentItemSelected = view.holder_layout
 
         } else { //If the clicked item IS the focused item
-            deselectMenuItem(view)
+            selectMenuItem(view, false)
             currentItemSelected = null
         }
     }
