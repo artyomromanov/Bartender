@@ -19,11 +19,10 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bartender.MyApp
 import com.example.bartender.R
+import com.example.bartender.di.components.DaggerSearchViewModelComponent
 import com.example.bartender.repository.database.SearchResult
-import com.example.bartender.di.components.DaggerViewModelComponent
 import com.example.bartender.di.modules.viewmodels.FavouritesViewModelModule
 import com.example.bartender.di.modules.viewmodels.SearchViewModelModule
-import com.example.bartender.di.modules.viewmodels.ShakeViewModelModule
 import com.example.bartender.favourites.viewmodel.FavouritesViewModel
 import com.example.bartender.search.model.Drink
 import com.example.bartender.search.viewmodel.SearchViewModel
@@ -139,10 +138,13 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
     }
 
     private fun initializeViewModels() {
-        DaggerViewModelComponent.builder().appComponent((activity?.application as MyApp).component())
-            .searchViewModelModule(SearchViewModelModule(this)).favouritesViewModelModule(
-                FavouritesViewModelModule(this)
-            ).shakeViewModelModule(ShakeViewModelModule(this)).build().injectSearchFragment(this)
+        DaggerSearchViewModelComponent
+            .builder()
+            .appComponent((activity?.application as MyApp).component())
+            .searchViewModelModule(SearchViewModelModule(this))
+            .favouritesViewModelModule(FavouritesViewModelModule(this))
+            .build()
+            .injectSearchFragment(this)
 
     }
 

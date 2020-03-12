@@ -27,4 +27,6 @@
     <string name="txt_favourites_success">Successfully added to favourites!</string>
     <string name="txt_favourites_error">Successfully removed from favourites!</string>
     <string name="txt_favourites_random_get">GET RANDOM!</string>
+    <string name="txt_random_image_error">Error</string>
+    <string name="txt_random_image_error_desc">Could not load image :(</string>
 </resources>

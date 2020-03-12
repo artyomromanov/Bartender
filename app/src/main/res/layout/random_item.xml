@@ -18,9 +18,9 @@
 
     <ImageView
         android:id="@+id/favourites_iv_thumb"
-        android:layout_width="140dp"
-        android:layout_height="147dp"
-        android:layout_marginBottom="140dp"
+        android:layout_width="@dimen/dm_random_item_width"
+        android:layout_height="@dimen/dm_random_item_height"
+        android:layout_marginBottom="@dimen/dm_margin_bottom"
         android:contentDescription="@string/txt_search_content_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/txt_favourites_tv_description"
-        android:textSize="16sp"
+        android:textSize="@dimen/txt_text_size_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

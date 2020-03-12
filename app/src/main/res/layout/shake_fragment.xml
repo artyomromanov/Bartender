@@ -43,7 +43,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_ingredients"
         android:layout_width="match_parent"
-        android:layout_height="400dp" />
+        android:layout_height="@dimen/dm_shaker_rv_height" />
 
     <LinearLayout
         android:id="@+id/shake_shaker"

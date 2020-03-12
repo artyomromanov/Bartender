@@ -1,5 +1,6 @@
 package com.example.bartender.shake.view
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,17 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bartender.MyApp
 import com.example.bartender.R
-import com.example.bartender.di.components.DaggerViewModelComponent
-import com.example.bartender.di.modules.viewmodels.FavouritesViewModelModule
-import com.example.bartender.di.modules.viewmodels.SearchViewModelModule
+import com.example.bartender.di.components.DaggerShakeViewModelComponent
 import com.example.bartender.di.modules.viewmodels.ShakeViewModelModule
 import com.example.bartender.shake.viewmodel.ShakeViewModel
 import kotlinx.android.synthetic.main.shake_fragment.*
 import javax.inject.Inject
-import com.example.bartender.shake.view.OnIngredientClickListener as OnIngredientClickListener1
 
-
-class ShakeFragment : Fragment(), OnIngredientClickListener1 {
+class ShakeFragment : Fragment(), OnIngredientClickListener {
 
     @Inject
     lateinit var shakeModel: ShakeViewModel
@@ -66,7 +63,15 @@ class ShakeFragment : Fragment(), OnIngredientClickListener1 {
             })
         }
 
+        //Drag target - to be completed when an item is dragged onto the shaker
         shake_shaker.let{ it.setOnDragListener(MyDragListener(it))}
+
+        val mediaPlayer: MediaPlayer? = MediaPlayer.create(context, R.raw.shaker)
+
+        shake_shaker.setOnClickListener {
+
+            mediaPlayer?.start()
+        }
 
     }
 
@@ -107,9 +112,12 @@ class ShakeFragment : Fragment(), OnIngredientClickListener1 {
     }
 
     private fun initializeViewModel() {
-        DaggerViewModelComponent.builder().appComponent((activity?.application as MyApp).component()).favouritesViewModelModule(
-                FavouritesViewModelModule(this)
-            ).searchViewModelModule(SearchViewModelModule(this)).shakeViewModelModule(ShakeViewModelModule(this)).build().injectShakeFragment(this)
+        DaggerShakeViewModelComponent
+            .builder()
+            .appComponent((activity?.application as MyApp).component())
+            .shakeViewModelModule(ShakeViewModelModule(this))
+            .build()
+            .injectShakeFragment(this)
     }
 
     override fun onIngredientClicked(view: View) {

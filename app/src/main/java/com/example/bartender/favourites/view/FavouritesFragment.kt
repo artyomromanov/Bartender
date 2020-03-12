@@ -10,10 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bartender.MyApp
 import com.example.bartender.R
-import com.example.bartender.di.components.DaggerViewModelComponent
+import com.example.bartender.di.components.DaggerFavouritesViewModelComponent
 import com.example.bartender.di.modules.viewmodels.FavouritesViewModelModule
-import com.example.bartender.di.modules.viewmodels.SearchViewModelModule
-import com.example.bartender.di.modules.viewmodels.ShakeViewModelModule
 import com.example.bartender.dummyDrink
 import com.example.bartender.favourites.model.RandomDrink
 import com.example.bartender.favourites.viewmodel.FavouritesViewModel
@@ -90,20 +88,18 @@ class FavouritesFragment : Fragment(), FavouritesRecyclerViewClickListener {
                 favourites_random_tv_description.visibility = View.VISIBLE
             }
             override fun onError(e: Exception?) {
-                favourites_random_tv_name.text = "Error"
-                favourites_random_tv_description.text = "Could not load image :("
+                favourites_random_tv_name.text = getString(R.string.txt_random_image_error)
+                favourites_random_tv_description.text = getString(R.string.txt_random_image_error_desc)
             }
         })
 
     }
 
     private fun initializeViewModel() {
-        DaggerViewModelComponent
+        DaggerFavouritesViewModelComponent
             .builder()
             .appComponent((activity?.application as MyApp).component())
             .favouritesViewModelModule(FavouritesViewModelModule(this))
-            .searchViewModelModule(SearchViewModelModule(this))
-            .shakeViewModelModule(ShakeViewModelModule(this))
             .build()
             .injectFavouritesFragment(this)
     }

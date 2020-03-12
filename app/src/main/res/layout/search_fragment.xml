@@ -29,7 +29,7 @@
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="@dimen/txt_text_size_16"
             android:text="@string/txt_search_recent_searches"/>
 
         <androidx.recyclerview.widget.RecyclerView

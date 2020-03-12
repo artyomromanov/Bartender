@@ -27,6 +27,6 @@
             android:layout_height="match_parent"
             android:text="@string/txt_search_suggestion_item"
             android:layout_margin="@dimen/dm_default_margin"
-            android:textSize="22sp" />
+            android:textSize="@dimen/txt_text_size_22" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
