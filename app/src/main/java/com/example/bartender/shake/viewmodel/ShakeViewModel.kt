@@ -4,31 +4,41 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.bartender.Repository
-import com.example.bartender.search.model.Drink
-import com.example.bartender.shake.model.Ingredient
+import com.example.bartender.shake.model.Ingredients
 
 class ShakeViewModel(private val repository: Repository.Shake) : ViewModel() {
 
     private val disposable = io.reactivex.disposables.CompositeDisposable()
 
-    private var ingredientData = MutableLiveData<List<Ingredient>>()
-    private val ingredientErrorData = MutableLiveData<String>()
+    private var ingredientData = MutableLiveData<Ingredients>()
+    private val ingredientNetworkErrorData = MutableLiveData<String>()
 
-    private val savedSearchSuggestions = MutableLiveData<List<String>>()
+    private val databaseErrorData = MutableLiveData<String>()
 
-    private val favouritesData = MutableLiveData<List<Drink>>()
+    private val databaseSuccessData = MutableLiveData<Boolean>()
 
 
-    fun getIngredients() {
+
+    //Get online ingredients and cache them to DB
+    fun getAndCacheIngredients() {
         disposable.add(
             repository
-                .getIngredients()
-                .subscribe({ data -> ingredientData.value = data },
-                    { error -> ingredientErrorData.value = error.message })
+                .getIngredientsOnline()
+                .subscribe(
+                    { data ->  ingredientData.value = data
+                    repository.cacheIngredients(data).subscribe(
+
+                        { databaseSuccessData.value = true },
+                        { databaseErrorData.value = it.message })},
+
+                    { error -> ingredientNetworkErrorData.value = error.message })
         )
     }
 
-    fun getIngredientData() = ingredientData as LiveData<List<Ingredient>>
-    fun getIngredientErrorData() = ingredientErrorData as LiveData<String>
+
+    fun getIngredientData() = ingredientData as LiveData<Ingredients>
+    fun getIngredientNetworkErrorData() = ingredientNetworkErrorData as LiveData<String>
+    fun getDatabaseErrorData() = databaseErrorData as LiveData<String>
+    fun getCacheSavedSuccessData() = databaseSuccessData as LiveData<Boolean>
 
 }

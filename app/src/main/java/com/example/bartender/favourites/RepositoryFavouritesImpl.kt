@@ -26,4 +26,12 @@ class RepositoryFavouritesImpl @Inject constructor(private val database: Cocktai
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }
+
+    override fun removeFavourite(drink: Drink): Completable {
+        return database
+            .cocktailsDaoFavourites()
+            .removeFavourite(drink)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
 }

@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.search_fragment.view.*
 import kotlinx.android.synthetic.main.search_item.view.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 class SearchFragment : Fragment(), RecyclerViewClickListener {
@@ -40,9 +41,10 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
     lateinit var searchViewModel: SearchViewModel
 
     @Inject
-    lateinit var favouritesViewModel : FavouritesViewModel
+    lateinit var favouritesViewModel: FavouritesViewModel
 
     var currentQuery = ""
+    var favourites = mutableSetOf<String>()
     private var currentItemSelected: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -92,7 +94,7 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
                     adapter?.notifyDataSetChanged()
                     scheduleLayoutAnimation()
                 }
-                searchViewModel.saveCurrentSearchResult(SearchResult(search_field?.query.toString().toLowerCase(Locale.ROOT).trim(), it))
+                searchViewModel.saveCurrentSearchResult(SearchResult(currentQuery, it))
                 status(2)
             })
 
@@ -112,62 +114,97 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
             //Observing Database @Insert success
             getDatabaseDataSaved().observe(viewLifecycleOwner, Observer {
                 if (it) {
-                    Toast.makeText(this@SearchFragment.context, "Successfully saved search to database!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@SearchFragment.context, getString(R.string.txt_database_success), Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this@SearchFragment.context, "Error saving data to database :(", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@SearchFragment.context, getString(R.string.txt_database_error), Toast.LENGTH_SHORT).show()
                 }
             })
         }
 
-        favouritesViewModel.getFavouritesDataSaveSuccess().observe(viewLifecycleOwner, Observer {
-            if(it){
-                Toast.makeText(this@SearchFragment.context, "Successfully added to favourites!", Toast.LENGTH_SHORT).show()
-            }
-        })
+        with(favouritesViewModel) {
 
-    }
-    private fun initializeViewModels() {
-       DaggerViewModelComponent
-           .builder()
-           .appComponent((activity?.application as MyApp).component())
-           .searchViewModelModule(SearchViewModelModule(this))
-           .favouritesViewModelModule(FavouritesViewModelModule(this))
-           .shakeViewModelModule(ShakeViewModelModule(this))
-           .build()
-           .injectSearchFragment(this)
+            //Get Favourites for interactive search list
+            getFavourites()
+            getFavouritesData().observe(viewLifecycleOwner, Observer {
 
-    }
-    //Plays the correct animation for select or deselect item in the search list
-    private fun selectMenuItem(view: View, select: Boolean, drink: Drink? = null) {
-        if(select){
-            with(view) {
-                submenu_layout.visibility = View.VISIBLE
-                main_menu_layout.animation = AnimationUtils.loadAnimation(context, R.anim.main_menu_animation_collapse)
-                submenu_layout.animation = AnimationUtils.loadAnimation(context, R.anim.submenu_item_animation_fade_in)
-
-                submenu_layout.search_btn_add.setOnClickListener {
-                    if (drink != null) {
-                        favouritesViewModel.addFavourite(drink)
-                    }
+                for (item in it) {
+                    favourites.add(item.idDrink)
                 }
+            })
+
+            getFavouritesDataSaveSuccess().observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    Toast.makeText(this@SearchFragment.context, getString(R.string.txt_favourites_success), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@SearchFragment.context, getString(R.string.txt_favourites_error), Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+    }
+
+    private fun initializeViewModels() {
+        DaggerViewModelComponent.builder().appComponent((activity?.application as MyApp).component())
+            .searchViewModelModule(SearchViewModelModule(this)).favouritesViewModelModule(
+                FavouritesViewModelModule(this)
+            ).shakeViewModelModule(ShakeViewModelModule(this)).build().injectSearchFragment(this)
+
+    }
+
+    //Select the item, and checks if it is in favourites
+    private fun selectMenuItem(view: View, drink: Drink) {
+        //update favourites
+        favouritesViewModel.getFavourites()
+
+        with(view) {
+            submenu_layout.visibility = View.VISIBLE
+            search_btn_add.visibility = View.VISIBLE
+            main_menu_layout.animation = AnimationUtils.loadAnimation(context, R.anim.main_menu_animation_collapse)
+            submenu_layout.animation = AnimationUtils.loadAnimation(context, R.anim.submenu_item_animation_fade_in)
+
+            var isAdded: Boolean
+
+            if (drink.idDrink in favourites) {
+                isAdded = true
+                search_btn_add.text = context.getString(R.string.search_btn_text_remove)
+            } else {
+                isAdded = false
+                search_btn_add.text = context.getString(R.string.search_btn_text_add)
             }
-        }else{
-            with(view) {
-                submenu_layout?.animation = AnimationUtils.loadAnimation(context, R.anim.submenu_item_animation_fade_out)
-                main_menu_layout?.animation = AnimationUtils.loadAnimation(context, R.anim.main_menu_animation_expand)
-                submenu_layout?.visibility = View.GONE
+
+            submenu_layout.search_btn_add.setOnClickListener {
+                if (isAdded) {
+                    favouritesViewModel.removeFavourite(drink)
+                    search_btn_add.text = context.getString(R.string.search_btn_text_add)
+                    isAdded = false
+                } else {
+                    favouritesViewModel.addFavourite(drink)
+                    search_btn_add.text = context.getString(R.string.search_btn_text_remove)
+                    isAdded = true
+                }
             }
         }
     }
+
+    //Deselects the item
+    private fun deselectMenuItem(view: View) {
+        with(view) {
+            submenu_layout?.animation = AnimationUtils.loadAnimation(context, R.anim.submenu_item_animation_fade_out)
+            main_menu_layout?.animation = AnimationUtils.loadAnimation(context, R.anim.main_menu_animation_expand)
+            submenu_layout?.visibility = View.GONE
+            search_btn_add.visibility = View.GONE
+        }
+    }
+
     //if scrolled, selection cancelled, and selected item is null
     private fun recyclerViewScrollListener() {
         rv_search.setOnScrollChangeListener { _, _, _, _, _ ->
             currentItemSelected?.also {
-                selectMenuItem(it, false)
+                deselectMenuItem(it)
                 currentItemSelected = null
             }
         }
     }
+
     //Contains the logic for menu selecting and deselecting menu items
     override fun onCocktailItemClicked(view: View, drink: Drink) {
 
@@ -176,13 +213,13 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
             //If there is another item which is selected
             if (currentItemSelected != null) {
                 //The other menu item fades out
-                currentItemSelected?.also { selectMenuItem(it, false) }
+                currentItemSelected?.also { deselectMenuItem(it) }
             }
-            selectMenuItem(view, true, drink) //Select item
+            selectMenuItem(view, drink) //Select item
             currentItemSelected = view.holder_layout
 
         } else { //If the clicked item IS the focused item
-            selectMenuItem(view, false)
+            deselectMenuItem(view)
             currentItemSelected = null
         }
     }

@@ -6,13 +6,16 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.bartender.search.model.Drink
+import com.example.bartender.shake.model.Ingredient
+import com.example.bartender.shake.model.Ingredients
 
 @TypeConverters(Converters::class)
-@Database(entities = [Drink::class/*, FavouriteDrinks::class*/, SearchResult::class], version = 6, exportSchema = false)
+@Database(entities = [Drink::class, SearchResult::class, Ingredient::class, Ingredients::class], version = 7, exportSchema = false)
 abstract class CocktailDatabase : RoomDatabase() {
 
     abstract fun cocktailsDaoSearch(): CocktailsDao.Search
     abstract fun cocktailsDaoFavourites(): CocktailsDao.Favourites
+    abstract fun cocktailsDaoShake(): CocktailsDao.Shake
 
     companion object {
 

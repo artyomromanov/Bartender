@@ -30,6 +30,14 @@ class FavouritesViewModel(private val repository: Repository.Favourites) : ViewM
                 .subscribe ({ favouritesDataSavedSuccess.value = true},{favouritesDataError.value = it.message})
         )
     }
+    fun removeFavourite(drink : Drink){
+
+        disposable.add(
+            repository
+                .removeFavourite(drink)
+                .subscribe ({ favouritesDataSavedSuccess.value = false},{favouritesDataError.value = it.message})
+        )
+    }
 
 
     fun getFavouritesData() = favouritesData as LiveData<List<Drink>>

@@ -20,4 +20,10 @@
     <string name="txt_favourites_tv_description">Description</string>
     <string name="txt_favourites_saved_success">Successfully saved as favourite!</string>
     <string name="txt_shake_ingredient_text">Ingredient</string>
+    <string name="search_btn_text_add">ADD</string>
+    <string name="search_btn_text_remove">REMOVE</string>
+    <string name="txt_database_success">Successfully cached to database!</string>
+    <string name="txt_database_error">Error caching data to database :(</string>
+    <string name="txt_favourites_success">Successfully added to favourites!</string>
+    <string name="txt_favourites_error">Successfully removed from favourites!</string>
 </resources>

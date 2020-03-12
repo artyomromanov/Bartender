@@ -2,6 +2,8 @@ package com.example.bartender.database
 
 import androidx.room.*
 import com.example.bartender.search.model.Drink
+import com.example.bartender.shake.model.Ingredient
+import com.example.bartender.shake.model.Ingredients
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -29,6 +31,27 @@ interface CocktailsDao {
 
         @Delete
         fun removeFavourite(drink: Drink): Completable
+
+    }
+
+    @Dao
+    interface Shake {
+        //Entity Ingredient
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        fun cacheIngredients(ingredientList : Ingredients) : Completable
+
+        @Query("SELECT * FROM ingredients_cache")
+        fun getIngredientsCache() : Single<Ingredients>
+
+        //Entity Ingredients!!!
+        @Query("SELECT * FROM ingredients_table")
+        fun getShakerCurrent(): Single<List<Ingredient>>
+
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        fun addIngredient(ingredient: Ingredient): Completable
+
+        @Delete
+        fun removeIngredient(ingredient: Ingredient): Completable
 
     }
 }

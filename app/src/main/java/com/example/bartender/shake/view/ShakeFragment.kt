@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,7 +15,6 @@ import com.example.bartender.di.modules.viewmodels.FavouritesViewModelModule
 import com.example.bartender.di.modules.viewmodels.SearchViewModelModule
 import com.example.bartender.di.modules.viewmodels.ShakeViewModelModule
 import com.example.bartender.shake.viewmodel.ShakeViewModel
-import kotlinx.android.synthetic.main.search_fragment.*
 import kotlinx.android.synthetic.main.shake_fragment.*
 import javax.inject.Inject
 import com.example.bartender.shake.view.OnIngredientClickListener as OnIngredientClickListener1
@@ -22,7 +22,7 @@ import com.example.bartender.shake.view.OnIngredientClickListener as OnIngredien
 class ShakeFragment : Fragment(), OnIngredientClickListener1 {
 
     @Inject
-    lateinit var shakeModel : ShakeViewModel
+    lateinit var shakeModel: ShakeViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.shake_fragment, container, false)
@@ -33,23 +33,38 @@ class ShakeFragment : Fragment(), OnIngredientClickListener1 {
 
         initializeViewModel()
 
-        rv_ingredients.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+        rv_ingredients.layoutManager = LinearLayoutManager(this.context)
 
-        shakeModel.getIngredients()
+        with(shakeModel) {
 
-        status(1)
+            getAndCacheIngredients()
+            status(1)
 
-        shakeModel.getIngredientData().observe(viewLifecycleOwner, Observer {
-            rv_ingredients.adapter = IngredientsAdapter(it, this)
-            status(2)
-        })
+            getIngredientData().observe(viewLifecycleOwner, Observer {
+                rv_ingredients.adapter = IngredientsAdapter(it.drinks, this@ShakeFragment)
+                status(2)
+            })
 
-        shakeModel.getIngredientErrorData().observe(viewLifecycleOwner, Observer {
-            shake_tv_error.text = it
-            status(3)
-        })
+            getIngredientNetworkErrorData().observe(viewLifecycleOwner, Observer {
+                shake_tv_error.text = it
+                status(3)
+            })
+            getDatabaseErrorData().observe(viewLifecycleOwner, Observer {
+                shake_tv_error.text = it
+                status(3)
+            })
+            getCacheSavedSuccessData().observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    Toast.makeText(this@ShakeFragment.context, getString(R.string.txt_database_success), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@ShakeFragment.context,  getString(R.string.txt_database_error), Toast.LENGTH_SHORT).show()
+                }
+            })
+
+        }
 
     }
+
     private fun status(state: Int) {
 
         when (state) {
@@ -80,7 +95,7 @@ class ShakeFragment : Fragment(), OnIngredientClickListener1 {
 
                 shake_btn_retry.setOnClickListener {
 
-                    shakeModel.getIngredients()
+                    shakeModel.getAndCacheIngredients()
                     status(1)
 
                 }
@@ -89,14 +104,9 @@ class ShakeFragment : Fragment(), OnIngredientClickListener1 {
     }
 
     private fun initializeViewModel() {
-        DaggerViewModelComponent
-            .builder()
-            .appComponent((activity?.application as MyApp).component())
-            .favouritesViewModelModule(FavouritesViewModelModule(this))
-            .searchViewModelModule(SearchViewModelModule(this))
-            .shakeViewModelModule(ShakeViewModelModule(this))
-            .build()
-            .injectShakeFragment(this)
+        DaggerViewModelComponent.builder().appComponent((activity?.application as MyApp).component()).favouritesViewModelModule(
+                FavouritesViewModelModule(this)
+            ).searchViewModelModule(SearchViewModelModule(this)).shakeViewModelModule(ShakeViewModelModule(this)).build().injectShakeFragment(this)
     }
 
     override fun onIngredientClicked(id: String) {
