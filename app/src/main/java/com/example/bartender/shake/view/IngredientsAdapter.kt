@@ -1,13 +1,12 @@
 package com.example.bartender.shake.view
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
-import com.example.bartender.INGREDIENT_IMAGE_ENDPOINT
-import com.example.bartender.R
-import com.example.bartender.SMALL_IMAGE_ADDITION
-import com.example.bartender.SMALL_IMAGE_INGREDIENT
+import com.example.bartender.*
 import com.example.bartender.shake.model.Ingredient
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.ingredient_item.view.*
@@ -40,12 +39,14 @@ class IngredientsAdapter(private val list: List<Ingredient>, private val listene
 
             itemView.shake_tv_name.text = list[position].strIngredient1
 
-            val fullIngredientUrl = INGREDIENT_IMAGE_ENDPOINT + list[position].strIngredient1 + SMALL_IMAGE_INGREDIENT
+            val fullIngredientUrl = INGREDIENT_IMAGE_ENDPOINT + list[position].strIngredient1 + MEDIUM_IMAGE_INGREDIENT
             Picasso.get().load(fullIngredientUrl).into(itemView.shake_iv_thumb)
             println(fullIngredientUrl)
 
             itemView.setOnClickListener {
-                listener.onIngredientClicked(list[position].strIngredient1)
+                val animation = AnimationUtils.loadAnimation(itemView.context, R.anim.ingredient_animation_add)
+                itemView.shake_iv_thumb.startAnimation(animation)
+                listener.onIngredientClicked(itemView.shake_iv_thumb)
             }
         }
     }

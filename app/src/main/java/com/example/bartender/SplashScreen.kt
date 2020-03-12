@@ -8,7 +8,7 @@ import android.os.Handler
 class SplashScreen : AppCompatActivity() {
 
     companion object {
-        const val SPLASH_TIME_OUT: Long = 3000
+        const val SPLASH_TIME_OUT: Long = 1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

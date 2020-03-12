@@ -28,8 +28,6 @@ class FavouritesViewModel(private val repository: RepositoryContract.Favourites)
                 .subscribe({data -> randomCocktailData.value = data} , {error -> randomCocktailDataError.value = error.message})
         )
     }
-
-
     fun getFavourites(){
 
         disposable.add(

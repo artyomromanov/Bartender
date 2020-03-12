@@ -14,24 +14,29 @@ class ShakeViewModel(private val repository: RepositoryContract.Shake) : ViewMod
     private val ingredientNetworkErrorData = MutableLiveData<String>()
 
     private val databaseErrorData = MutableLiveData<String>()
-
     private val databaseSuccessData = MutableLiveData<Boolean>()
 
 
 
     //Get online ingredients and cache them to DB
-    fun getAndCacheIngredients() {
+    fun getIngredients() {
         disposable.add(
             repository
                 .getIngredientsOnline()
                 .subscribe(
-                    { data ->  ingredientData.value = data
-                    repository.cacheIngredients(data).subscribe(
-
-                        { databaseSuccessData.value = true },
-                        { databaseErrorData.value = it.message })},
+                    { data ->  ingredientData.value = data},
 
                     { error -> ingredientNetworkErrorData.value = error.message })
+        )
+    }
+    fun cacheIngredients(ingredients: Ingredients){
+
+        disposable.add(
+
+            repository
+                .cacheIngredients(ingredients)
+                .subscribe({ databaseSuccessData.value = true },
+                    { databaseErrorData.value = it.message })
         )
     }
 

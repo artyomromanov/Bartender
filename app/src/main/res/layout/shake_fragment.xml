@@ -5,12 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Button" />
-
     <LinearLayout
         android:id="@+id/shake_status_container"
         android:layout_width="match_parent"
@@ -49,6 +43,16 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_ingredients"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="400dp" />
+
+    <LinearLayout
+        android:id="@+id/shake_shaker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_shaker"
+        android:layout_marginStart="@dimen/dm_nav_bar_height"
+        android:layout_marginEnd="@dimen/dm_nav_bar_height"
+        android:layout_marginBottom="@dimen/dm_nav_bar_height"
+        android:orientation="vertical" />
 
 </LinearLayout>

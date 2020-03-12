@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.bartender.MyApp
 import com.example.bartender.R
 import com.example.bartender.di.components.DaggerViewModelComponent
@@ -18,6 +19,7 @@ import com.example.bartender.shake.viewmodel.ShakeViewModel
 import kotlinx.android.synthetic.main.shake_fragment.*
 import javax.inject.Inject
 import com.example.bartender.shake.view.OnIngredientClickListener as OnIngredientClickListener1
+
 
 class ShakeFragment : Fragment(), OnIngredientClickListener1 {
 
@@ -33,15 +35,17 @@ class ShakeFragment : Fragment(), OnIngredientClickListener1 {
 
         initializeViewModel()
 
-        rv_ingredients.layoutManager = LinearLayoutManager(this.context)
+        rv_ingredients.layoutManager = LinearLayoutManager(this.context, RecyclerView.HORIZONTAL, false)
 
         with(shakeModel) {
 
-            getAndCacheIngredients()
+            getIngredients()
             status(1)
 
             getIngredientData().observe(viewLifecycleOwner, Observer {
+
                 rv_ingredients.adapter = IngredientsAdapter(it.drinks, this@ShakeFragment)
+                cacheIngredients(it)
                 status(2)
             })
 
@@ -60,8 +64,9 @@ class ShakeFragment : Fragment(), OnIngredientClickListener1 {
                     Toast.makeText(this@ShakeFragment.context,  getString(R.string.txt_database_error), Toast.LENGTH_SHORT).show()
                 }
             })
-
         }
+
+        shake_shaker.let{ it.setOnDragListener(MyDragListener(it))}
 
     }
 
@@ -70,12 +75,10 @@ class ShakeFragment : Fragment(), OnIngredientClickListener1 {
         when (state) {
 
             1 -> { //Initial state - loading
-
                 shake_status_container.visibility = View.VISIBLE
                 shake_tv_error.visibility = View.GONE
                 shake_pb_progress.visibility = View.VISIBLE
                 shake_btn_retry.visibility = View.GONE
-
             }
 
             2 -> {  //Network Success
@@ -95,7 +98,7 @@ class ShakeFragment : Fragment(), OnIngredientClickListener1 {
 
                 shake_btn_retry.setOnClickListener {
 
-                    shakeModel.getAndCacheIngredients()
+                    shakeModel.getIngredients()
                     status(1)
 
                 }
@@ -109,7 +112,7 @@ class ShakeFragment : Fragment(), OnIngredientClickListener1 {
             ).searchViewModelModule(SearchViewModelModule(this)).shakeViewModelModule(ShakeViewModelModule(this)).build().injectShakeFragment(this)
     }
 
-    override fun onIngredientClicked(id: String) {
-        println(id)
+    override fun onIngredientClicked(view: View) {
+        //Implement animation or dragging to shaker
     }
 }

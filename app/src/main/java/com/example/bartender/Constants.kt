@@ -8,7 +8,7 @@ const val SMALL_IMAGE_ADDITION = "/preview"
 const val INGREDIENTS_ENDPOINT = "list.php?i=list"
 const val RANDOM_ENDPOINT = "random.php"
 const val INGREDIENT_IMAGE_ENDPOINT = "https://www.thecocktaildb.com/images/ingredients/"
-const val SMALL_IMAGE_INGREDIENT = "-Small.png"
+const val MEDIUM_IMAGE_INGREDIENT = "-Medium.png"
 
 val dummyDrink: Drink = Drink(
     "007",
