@@ -12,6 +12,7 @@ import com.example.bartender.R
 import com.example.bartender.di.components.DaggerViewModelComponent
 import com.example.bartender.di.modules.viewmodels.FavouritesViewModelModule
 import com.example.bartender.di.modules.viewmodels.SearchViewModelModule
+import com.example.bartender.di.modules.viewmodels.ShakeViewModelModule
 import com.example.bartender.dummyDrink
 import com.example.bartender.favourites.viewmodel.FavouritesViewModel
 import kotlinx.android.synthetic.main.favourites_fragment.*
@@ -62,6 +63,7 @@ class FavouritesFragment : Fragment(), FavouritesRecyclerViewClickListener {
             .appComponent((activity?.application as MyApp).component())
             .favouritesViewModelModule(FavouritesViewModelModule(this))
             .searchViewModelModule(SearchViewModelModule(this))
+            .shakeViewModelModule(ShakeViewModelModule(this))
             .build()
             .injectFavouritesFragment(this)
     }

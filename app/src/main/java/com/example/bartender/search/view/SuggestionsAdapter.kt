@@ -11,8 +11,6 @@ import kotlinx.android.synthetic.main.suggestion_item.view.*
 class SuggestionsAdapter(private val list: List<SpannableString>, private val listener: RecyclerViewClickListener) :
     RecyclerView.Adapter<SuggestionsAdapter.ViewHolder>() {
 
-    fun getListSize() : Int = list.size
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         return ViewHolder(parent.populateList(R.layout.suggestion_item))

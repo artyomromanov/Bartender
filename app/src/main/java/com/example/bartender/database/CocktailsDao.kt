@@ -1,4 +1,4 @@
-package com.example.bartender.search.database
+package com.example.bartender.database
 
 import androidx.room.*
 import com.example.bartender.search.model.Drink
@@ -26,6 +26,9 @@ interface CocktailsDao {
 
         @Insert(onConflict = OnConflictStrategy.REPLACE)
         fun addFavourite(drink: Drink): Completable
+
+        @Delete
+        fun removeFavourite(drink: Drink): Completable
 
     }
 }

@@ -1,7 +1,7 @@
 package com.example.bartender.di.modules
 
 import android.content.Context
-import com.example.bartender.search.database.CocktailDatabase
+import com.example.bartender.database.CocktailDatabase
 import dagger.Module
 import dagger.Provides
 
@@ -9,7 +9,7 @@ import dagger.Provides
 class DatabaseModule(private val context : Context) {
 
     @Provides
-    fun provideDatabase() : CocktailDatabase{
+    fun provideDatabase() : CocktailDatabase {
 
         return CocktailDatabase.getInstance(context)
 

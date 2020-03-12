@@ -3,11 +3,11 @@ package com.example.bartender.search.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.bartender.search.database.SearchResult
 import com.example.bartender.search.model.Drink
 import com.example.bartender.Repository
+import com.example.bartender.database.SearchResult
 
-class SearchViewModel(private val repository: Repository) : ViewModel() {
+class SearchViewModel(private val repository: Repository.Search) : ViewModel() {
 
     private val disposable = io.reactivex.disposables.CompositeDisposable()
 

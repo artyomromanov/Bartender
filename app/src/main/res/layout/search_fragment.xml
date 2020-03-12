@@ -8,21 +8,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:orientation="vertical"
-    tools:context=".HomeActivity">
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/search_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="top"
         android:layout_gravity="top">
         <SearchView
-            android:id="@+id/search_bar"
+            android:id="@+id/search_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="top"
-            android:iconifiedByDefault="false"
+            android:iconifiedByDefault="true"
             android:queryHint="@string/txt_search_sw_query_hint" />
         <TextView
             android:id="@+id/tv_recently_searched"
@@ -33,10 +33,10 @@
             android:text="@string/txt_search_recent_searches"/>
 
         <androidx.recyclerview.widget.RecyclerView
+
             android:id="@+id/rv_suggestions"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:visibility="gone"
             android:layout_marginBottom="@dimen/dm_nav_bar_height"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/search_view"

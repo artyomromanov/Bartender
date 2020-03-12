@@ -19,4 +19,5 @@
     <string name="txt_favourites_tip_content">All your favourite cocktails are stored here. Try the shaker, to learn them!</string>
     <string name="txt_favourites_tv_description">Description</string>
     <string name="txt_favourites_saved_success">Successfully saved as favourite!</string>
+    <string name="txt_shake_ingredient_text">Ingredient</string>
 </resources>

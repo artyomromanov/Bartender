@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.bartender.favourites.view.FavouritesFragment
 import com.example.bartender.search.view.SearchFragment
-import com.example.bartender.shake.ShakeFragment
+import com.example.bartender.shake.view.ShakeFragment
 import kotlinx.android.synthetic.main.home_activity.*
 
 class HomeActivity : AppCompatActivity() {

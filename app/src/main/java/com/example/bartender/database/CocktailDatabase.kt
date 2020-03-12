@@ -1,4 +1,4 @@
-package com.example.bartender.search.database
+package com.example.bartender.database
 
 import android.content.Context
 import androidx.room.Database

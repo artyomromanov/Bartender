@@ -19,9 +19,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bartender.MyApp
 import com.example.bartender.R
+import com.example.bartender.database.SearchResult
 import com.example.bartender.di.components.DaggerViewModelComponent
 import com.example.bartender.di.modules.viewmodels.FavouritesViewModelModule
 import com.example.bartender.di.modules.viewmodels.SearchViewModelModule
+import com.example.bartender.di.modules.viewmodels.ShakeViewModelModule
 import com.example.bartender.favourites.viewmodel.FavouritesViewModel
 import com.example.bartender.search.model.Drink
 import com.example.bartender.search.viewmodel.SearchViewModel
@@ -61,6 +63,8 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
         recyclerViewScrollListener()
 
+        println(search_layout.getChildAt(0))
+
         with(searchViewModel) {
 
             //Initial call to database to show previous searches
@@ -71,8 +75,7 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
                 if (it.isNotEmpty()) {
                     with(rv_suggestions) {
-                        if(search_bar == null) println("OMG")
-                        adapter = SuggestionsAdapter(highlightSearchMatch(it, search_bar?.query.toString()), this@SearchFragment)
+                        adapter = SuggestionsAdapter(highlightSearchMatch(it, currentQuery), this@SearchFragment)
                         adapter?.notifyDataSetChanged()
                         scheduleLayoutAnimation()
                         showSuggestions()
@@ -89,7 +92,7 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
                     adapter?.notifyDataSetChanged()
                     scheduleLayoutAnimation()
                 }
-                //searchViewModel.saveCurrentSearchResult(SearchResult(search_view.query.toString().toLowerCase(Locale.ROOT).trim(), it))
+                searchViewModel.saveCurrentSearchResult(SearchResult(search_field?.query.toString().toLowerCase(Locale.ROOT).trim(), it))
                 status(2)
             })
 
@@ -129,6 +132,7 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
            .appComponent((activity?.application as MyApp).component())
            .searchViewModelModule(SearchViewModelModule(this))
            .favouritesViewModelModule(FavouritesViewModelModule(this))
+           .shakeViewModelModule(ShakeViewModelModule(this))
            .build()
            .injectSearchFragment(this)
 
@@ -185,13 +189,13 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
     override fun onSuggestionItemClicked(suggestion: String) {
         currentQuery = suggestion
-        search_bar.setQuery(suggestion, true)
+        search_field.setQuery(suggestion, true)
     }
 
     //Contains the logic for searchView
     private fun initializeSearchView() {
 
-        with(search_bar) {
+        with(search_field) {
 
             isSubmitButtonEnabled = true
 
@@ -206,12 +210,11 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
                 override fun onQueryTextChange(newText: String): Boolean {
 
-                    if (newText.isBlank()) {
-                        //hide search results if query is empty
-                        //rv_search.visibility = View.GONE
-                    }
                     //Get new suggestion data, unless just navigated from one
-                    if (newText != currentQuery) searchViewModel.getSuggestions(newText)
+                    if (newText != currentQuery) {
+                        currentQuery = newText
+                        searchViewModel.getSuggestions(newText)
+                    }
                     return true
                 }
             })
@@ -285,7 +288,7 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
                 search_btn_retry.setOnClickListener {
 
-                    searchViewModel.getSearchResults(search_bar.query.toString())
+                    searchViewModel.getSearchResults(search_field.query.toString())
                     status(1)
 
                 }

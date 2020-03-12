@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    xmlns:tools="http://schemas.android.com/tools">
+    <TextView
+        android:id="@+id/shake_tv_name"
+        android:layout_width="wrap_content"
+        android:textSize="@dimen/dm_search_item_txtsize"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="@string/txt_shake_ingredient_text"/>
+
+    <ImageView
+        android:id="@+id/shake_iv_thumb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        tools:src="@drawable/ic_cocktail_menu_item"
+        android:contentDescription="@string/txt_shake_ingredient_text" />
+
+</LinearLayout>

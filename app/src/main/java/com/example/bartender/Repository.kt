@@ -1,7 +1,7 @@
 package com.example.bartender
 
-import com.example.bartender.search.database.SearchResult
 import com.example.bartender.search.model.Drink
+import com.example.bartender.shake.model.Ingredient
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -14,12 +14,19 @@ interface Repository {
         fun addFavourite(drink : Drink) : Completable
 
     }
+    interface Shake {
 
-    fun getSearchResults(query : String) : Single<List<Drink>>
+        fun getIngredients() : Single<List<Ingredient>>
 
-    fun getSuggestions(query: String) : Single<List<String>>
+    }
+    interface Search {
 
-    fun saveLastSearchResult(result: SearchResult) : Completable
+        fun getSearchResults(query: String): Single<List<Drink>>
+
+        fun getSuggestions(query: String): Single<List<String>>
+
+        fun saveLastSearchResult(result: com.example.bartender.database.SearchResult): Completable
+    }
 
 }
 

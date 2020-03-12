@@ -1,8 +1,8 @@
 package com.example.bartender.favourites
 
-import com.example.bartender.search.database.CocktailDatabase
 import com.example.bartender.search.model.Drink
 import com.example.bartender.Repository
+import com.example.bartender.database.CocktailDatabase
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers

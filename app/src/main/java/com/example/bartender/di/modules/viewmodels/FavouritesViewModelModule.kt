@@ -3,11 +3,11 @@ package com.example.bartender.di.modules.viewmodels
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.bartender.Repository
+import com.example.bartender.database.CocktailDatabase
 import com.example.bartender.di.scopes.ActivityScope
 import com.example.bartender.favourites.RepositoryFavouritesImpl
 import com.example.bartender.favourites.viewmodel.FavouritesViewModel
 import com.example.bartender.favourites.viewmodel.FavouritesViewModelFactory
-import com.example.bartender.search.database.CocktailDatabase
 import dagger.Module
 import dagger.Provides
 
