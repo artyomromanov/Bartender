@@ -1,15 +1,18 @@
-package com.example.bartender
+package com.example.bartender.repository
 
-import com.example.bartender.database.SearchResult
+import com.example.bartender.favourites.model.RandomModel
+import com.example.bartender.repository.database.SearchResult
 import com.example.bartender.search.model.Drink
 import com.example.bartender.shake.model.Ingredient
 import com.example.bartender.shake.model.Ingredients
 import io.reactivex.Completable
 import io.reactivex.Single
 
-interface Repository {
+interface RepositoryContract {
 
     interface Favourites {
+
+        fun getRandomCocktail() : Single<RandomModel>
 
         fun getFavourites() : Single<List<Drink>>
 

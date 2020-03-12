@@ -19,7 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bartender.MyApp
 import com.example.bartender.R
-import com.example.bartender.database.SearchResult
+import com.example.bartender.repository.database.SearchResult
 import com.example.bartender.di.components.DaggerViewModelComponent
 import com.example.bartender.di.modules.viewmodels.FavouritesViewModelModule
 import com.example.bartender.di.modules.viewmodels.SearchViewModelModule
@@ -28,9 +28,7 @@ import com.example.bartender.favourites.viewmodel.FavouritesViewModel
 import com.example.bartender.search.model.Drink
 import com.example.bartender.search.viewmodel.SearchViewModel
 import kotlinx.android.synthetic.main.search_fragment.*
-import kotlinx.android.synthetic.main.search_fragment.view.*
 import kotlinx.android.synthetic.main.search_item.view.*
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -64,8 +62,6 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
         initializeViewModels()
 
         recyclerViewScrollListener()
-
-        println(search_layout.getChildAt(0))
 
         with(searchViewModel) {
 
@@ -225,7 +221,7 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
     }
 
     override fun onSuggestionItemClicked(suggestion: String) {
-        currentQuery = suggestion
+        currentQuery = suggestion.trim()
         search_field.setQuery(suggestion, true)
     }
 
@@ -239,7 +235,7 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String): Boolean {
-                    searchViewModel.getSearchResults(query)
+                    searchViewModel.getSearchResults(query.trim())
                     status(1)
                     showSuggestions(false)
                     return true
@@ -249,8 +245,8 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
                     //Get new suggestion data, unless just navigated from one
                     if (newText != currentQuery) {
-                        currentQuery = newText
-                        searchViewModel.getSuggestions(newText)
+                        currentQuery = newText.trim()
+                        searchViewModel.getSuggestions(currentQuery)
                     }
                     return true
                 }

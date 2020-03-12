@@ -3,10 +3,10 @@ package com.example.bartender.shake.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.bartender.Repository
+import com.example.bartender.repository.RepositoryContract
 import com.example.bartender.shake.model.Ingredients
 
-class ShakeViewModel(private val repository: Repository.Shake) : ViewModel() {
+class ShakeViewModel(private val repository: RepositoryContract.Shake) : ViewModel() {
 
     private val disposable = io.reactivex.disposables.CompositeDisposable()
 
@@ -41,4 +41,7 @@ class ShakeViewModel(private val repository: Repository.Shake) : ViewModel() {
     fun getDatabaseErrorData() = databaseErrorData as LiveData<String>
     fun getCacheSavedSuccessData() = databaseSuccessData as LiveData<Boolean>
 
+    override fun onCleared() {
+        disposable.clear()
+    }
 }

@@ -6,7 +6,7 @@
     <TextView
         android:id="@+id/shake_tv_name"
         android:layout_width="wrap_content"
-        android:textSize="@dimen/dm_search_item_txtsize"
+        android:textSize="@dimen/dm_search_item_txt_size"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:text="@string/txt_shake_ingredient_text"/>

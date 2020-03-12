@@ -1,7 +1,10 @@
-package com.example.bartender.search.model
+package com.example.bartender.repository.network
 
 import com.example.bartender.INGREDIENTS_ENDPOINT
+import com.example.bartender.RANDOM_ENDPOINT
 import com.example.bartender.SEARCH_ENDPOINT
+import com.example.bartender.favourites.model.RandomModel
+import com.example.bartender.search.model.SearchModel
 import com.example.bartender.shake.model.Ingredients
 import io.reactivex.Single
 import retrofit2.http.GET
@@ -14,5 +17,8 @@ interface CocktailsClient {
 
     @GET(INGREDIENTS_ENDPOINT)
     fun getIngredients() : Single<Ingredients>
+
+    @GET(RANDOM_ENDPOINT)
+    fun getRandom() : Single<RandomModel>
 
 }

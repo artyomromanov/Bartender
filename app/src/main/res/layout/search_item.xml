@@ -26,7 +26,7 @@
             android:layout_weight="1"
             android:maxLines="3"
             android:text="@string/txt_search_item_name"
-            android:textSize="@dimen/dm_search_item_txtsize"
+            android:textSize="@dimen/dm_search_item_txt_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_thumb"
             app:layout_constraintHorizontal_bias="0.39"

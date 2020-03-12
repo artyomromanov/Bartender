@@ -1,10 +1,10 @@
 package com.example.bartender.di.components
 
 import com.example.bartender.MyApp
-import com.example.bartender.database.CocktailDatabase
+import com.example.bartender.repository.database.CocktailDatabase
 import com.example.bartender.di.modules.DatabaseModule
 import com.example.bartender.di.modules.NetworkModule
-import com.example.bartender.search.model.CocktailsClient
+import com.example.bartender.repository.network.CocktailsClient
 import dagger.Component
 import javax.inject.Singleton
 

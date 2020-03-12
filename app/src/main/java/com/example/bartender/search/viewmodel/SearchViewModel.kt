@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.bartender.search.model.Drink
-import com.example.bartender.Repository
-import com.example.bartender.database.SearchResult
+import com.example.bartender.repository.RepositoryContract
+import com.example.bartender.repository.database.SearchResult
 
-class SearchViewModel(private val repository: Repository.Search) : ViewModel() {
+class SearchViewModel(private val repository: RepositoryContract.Search) : ViewModel() {
 
     private val disposable = io.reactivex.disposables.CompositeDisposable()
 
@@ -18,9 +18,6 @@ class SearchViewModel(private val repository: Repository.Search) : ViewModel() {
 
     private val databaseErrorData = MutableLiveData<String>()
     private val databaseDataSavedSuccess = MutableLiveData<Boolean>()
-
-    private val favouritesData = MutableLiveData<List<Drink>>()
-
 
 
     fun getSearchResults(query: String) {
@@ -49,4 +46,7 @@ class SearchViewModel(private val repository: Repository.Search) : ViewModel() {
     fun getDatabaseErrorData() = databaseErrorData as LiveData<String>
     fun getDatabaseDataSaved() = databaseDataSavedSuccess as LiveData<Boolean>
 
+    override fun onCleared() {
+        disposable.clear()
+    }
 }

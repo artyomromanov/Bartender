@@ -2,12 +2,13 @@ package com.example.bartender.di.modules.viewmodels
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.bartender.Repository
-import com.example.bartender.database.CocktailDatabase
+import com.example.bartender.repository.RepositoryContract
+import com.example.bartender.repository.database.CocktailDatabase
 import com.example.bartender.di.scopes.ActivityScope
-import com.example.bartender.favourites.RepositoryFavouritesImpl
+import com.example.bartender.favourites.model.RepositoryFavouritesImpl
 import com.example.bartender.favourites.viewmodel.FavouritesViewModel
 import com.example.bartender.favourites.viewmodel.FavouritesViewModelFactory
+import com.example.bartender.repository.network.CocktailsClient
 import dagger.Module
 import dagger.Provides
 
@@ -16,13 +17,13 @@ class FavouritesViewModelModule(private val fragment: Fragment) {
 
     @ActivityScope
     @Provides
-    fun provideRepositoryFavourites(database: CocktailDatabase) : Repository.Favourites {
-        return RepositoryFavouritesImpl(database)
+    fun provideRepositoryFavourites(client: CocktailsClient, database: CocktailDatabase) : RepositoryContract.Favourites {
+        return RepositoryFavouritesImpl(client, database)
     }
     @ActivityScope
     @Provides
-    fun provideFavouritesViewModelFactory(repository: Repository.Favourites) : FavouritesViewModelFactory {
-        return FavouritesViewModelFactory(repository)
+    fun provideFavouritesViewModelFactory(repositoryContract: RepositoryContract.Favourites) : FavouritesViewModelFactory {
+        return FavouritesViewModelFactory(repositoryContract)
     }
     @ActivityScope
     @Provides

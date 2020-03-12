@@ -1,4 +1,4 @@
-package com.example.bartender.database
+package com.example.bartender.repository.database
 
 import androidx.room.TypeConverter
 import com.example.bartender.search.model.Drink

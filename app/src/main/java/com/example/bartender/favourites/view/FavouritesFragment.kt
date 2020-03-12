@@ -1,6 +1,7 @@
 package com.example.bartender.favourites.view
 
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +15,13 @@ import com.example.bartender.di.modules.viewmodels.FavouritesViewModelModule
 import com.example.bartender.di.modules.viewmodels.SearchViewModelModule
 import com.example.bartender.di.modules.viewmodels.ShakeViewModelModule
 import com.example.bartender.dummyDrink
+import com.example.bartender.favourites.model.RandomDrink
 import com.example.bartender.favourites.viewmodel.FavouritesViewModel
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.favourites_fragment.*
 import kotlinx.android.synthetic.main.search_fragment.*
 import javax.inject.Inject
+
 
 class FavouritesFragment : Fragment(), FavouritesRecyclerViewClickListener {
 
@@ -35,24 +39,60 @@ class FavouritesFragment : Fragment(), FavouritesRecyclerViewClickListener {
 
         initializeViewModel()
 
-        favouritesViewModel.addFavourite(dummyDrink)
+        with(favouritesViewModel){
 
-        status(1)
+            addFavourite(dummyDrink)
 
-        favouritesViewModel.getFavourites()
+            status(1)
 
-        favouritesViewModel.getFavouritesData().observe(viewLifecycleOwner, Observer {
+            getFavourites()
 
-            rv_favourites.adapter = FavouritesAdapter(it, this@FavouritesFragment)
-            status(2)
+            getFavouritesData().observe(viewLifecycleOwner, Observer {
 
-        })
+                rv_favourites.adapter = FavouritesAdapter(it, this@FavouritesFragment)
+                status(2)
 
-        favouritesViewModel.getFavouritesDataError().observe(viewLifecycleOwner, Observer {
+            })
 
-            favourites_tv_error.text = it
-            status(3)
+            getFavouritesDataError().observe(viewLifecycleOwner, Observer {
 
+                favourites_tv_error.text = it
+                status(3)
+
+            })
+
+            getRandomCocktailData().observe(viewLifecycleOwner, Observer {
+                    bind(it)
+            })
+
+            getRandomCocktailDataError().observe(viewLifecycleOwner, Observer {
+                favourites_tv_error.text = it
+            })
+
+            favourites_random_btn_get.setOnClickListener {
+                getRandomCocktail()
+            }
+        }
+    }
+
+    private fun bind(data : RandomDrink){
+
+        favourites_pb_random_progress.visibility = View.VISIBLE
+        favourites_random_tv_name.text = data.strDrink
+        favourites_random_tv_description.text = data.strInstructions
+        favourites_random_tv_description.movementMethod = ScrollingMovementMethod()
+
+        Picasso.get().load(data.strDrinkThumb).into(favourites_random_iv_thumb, object : com.squareup.picasso.Callback {
+            override fun onSuccess() {
+                favourites_pb_random_progress.visibility = View.GONE
+                favourites_random_tv_name.visibility = View.VISIBLE
+                favourites_random_iv_thumb.visibility = View.VISIBLE
+                favourites_random_tv_description.visibility = View.VISIBLE
+            }
+            override fun onError(e: Exception?) {
+                favourites_random_tv_name.text = "Error"
+                favourites_random_tv_description.text = "Could not load image :("
+            }
         })
 
     }

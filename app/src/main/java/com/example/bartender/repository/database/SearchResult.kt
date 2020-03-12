@@ -1,4 +1,4 @@
-package com.example.bartender.database
+package com.example.bartender.repository.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

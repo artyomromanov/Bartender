@@ -26,4 +26,5 @@
     <string name="txt_database_error">Error caching data to database :(</string>
     <string name="txt_favourites_success">Successfully added to favourites!</string>
     <string name="txt_favourites_error">Successfully removed from favourites!</string>
+    <string name="txt_favourites_random_get">GET RANDOM!</string>
 </resources>

@@ -6,6 +6,7 @@ const val BASE_URL = "https://www.thecocktaildb.com/api/json/v1/1/"
 const val SEARCH_ENDPOINT = "search.php"
 const val SMALL_IMAGE_ADDITION = "/preview"
 const val INGREDIENTS_ENDPOINT = "list.php?i=list"
+const val RANDOM_ENDPOINT = "random.php"
 const val INGREDIENT_IMAGE_ENDPOINT = "https://www.thecocktaildb.com/images/ingredients/"
 const val SMALL_IMAGE_INGREDIENT = "-Small.png"
 

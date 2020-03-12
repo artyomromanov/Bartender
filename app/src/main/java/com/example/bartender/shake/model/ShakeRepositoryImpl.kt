@@ -1,8 +1,8 @@
 package com.example.bartender.shake.model
 
-import com.example.bartender.Repository
-import com.example.bartender.database.CocktailDatabase
-import com.example.bartender.search.model.CocktailsClient
+import com.example.bartender.repository.RepositoryContract
+import com.example.bartender.repository.database.CocktailDatabase
+import com.example.bartender.repository.network.CocktailsClient
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -10,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class ShakeRepositoryImpl @Inject constructor(private val client: CocktailsClient, private val database: CocktailDatabase) :
-    Repository.Shake {
+    RepositoryContract.Shake {
 
     override fun getIngredientsOnline(): Single<Ingredients> {
 

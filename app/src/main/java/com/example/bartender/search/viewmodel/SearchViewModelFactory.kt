@@ -2,10 +2,11 @@ package com.example.bartender.search.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.bartender.Repository
+import com.example.bartender.repository.RepositoryContract
 import javax.inject.Inject
 
-class SearchViewModelFactory @Inject constructor(private val repository: Repository.Search) : ViewModelProvider.Factory{
+@Suppress("UNCHECKED_CAST")
+class SearchViewModelFactory @Inject constructor(private val repository: RepositoryContract.Search) : ViewModelProvider.Factory{
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 
