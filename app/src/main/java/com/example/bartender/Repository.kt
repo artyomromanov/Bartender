@@ -1,7 +1,7 @@
 package com.example.bartender
 
-import com.example.bartender.search.database.SearchResult
-import com.example.bartender.search.model.Drink
+import com.example.bartender.database.SearchResult
+import com.example.bartender.model.Drink
 import io.reactivex.Completable
 import io.reactivex.Single
 

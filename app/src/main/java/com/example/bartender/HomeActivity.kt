@@ -3,18 +3,33 @@ package com.example.bartender
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.bartender.favourites.view.FavouritesFragment
-import com.example.bartender.search.view.SearchFragment
-import com.example.bartender.shake.ShakeFragment
+import com.example.bartender.di.components.DaggerViewModelComponent
+import com.example.bartender.di.modules.viewmodels.CocktailsViewModelModule
+import com.example.bartender.favourites_fragment.FavouritesFragment
+import com.example.bartender.search_fragment.SearchFragment
+import com.example.bartender.shake_fragment.ShakeFragment
+import com.example.bartender.util.MyApp
+import com.example.bartender.viewmodel.CocktailsViewModel
 import kotlinx.android.synthetic.main.home_activity.*
+import javax.inject.Inject
 
 class HomeActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var model : CocktailsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_activity)
 
         supportActionBar?.hide()
+
+        DaggerViewModelComponent
+            .builder()
+            .appComponent((application as MyApp).component())
+            .cocktailsViewModelModule(CocktailsViewModelModule(this))
+            .build()
+            .injectHomeActivity(this)
 
         var currentlySelectedId = cocktails_navigation.selectedItemId
 
@@ -24,13 +39,13 @@ class HomeActivity : AppCompatActivity() {
 
                 R.id.id_search -> {
                     if (currentlySelectedId != R.id.id_search) {
-                        createFragment(SearchFragment())
+                        createFragment(SearchFragment(model))
                         currentlySelectedId = R.id.id_search
                     }
                 }
                 R.id.id_favourites -> {
                     if (currentlySelectedId != R.id.id_favourites) {
-                        createFragment(FavouritesFragment())
+                        createFragment(FavouritesFragment(model))
                         currentlySelectedId = R.id.id_favourites
                     }
                 }
@@ -45,7 +60,7 @@ class HomeActivity : AppCompatActivity() {
             true
         }
 
-        createFragment(SearchFragment())
+        createFragment(SearchFragment(model))
 
     }
 

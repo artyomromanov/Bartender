@@ -1,7 +1,7 @@
 package com.example.bartender.di.modules
 
-import com.example.bartender.BASE_URL
-import com.example.bartender.search.model.CocktailsClient
+import com.example.bartender.util.BASE_URL
+import com.example.bartender.model.CocktailsClient
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
