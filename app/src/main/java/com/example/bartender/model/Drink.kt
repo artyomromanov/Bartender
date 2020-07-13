@@ -35,4 +35,8 @@ data class Drink(
     val strIngredient5: String?,
     @SerializedName("strIngredient6")
     val strIngredient6: String?
-)
+) {
+    override fun toString(): String {
+        return strDrink ?: "No name found"
+    }
+}

@@ -10,7 +10,7 @@ import com.example.bartender.model.Drink
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.search_item.view.*
 
-class SearchAdapter(private val list: List<Drink>, private val listener: RecyclerViewClickListener) :
+class SearchAdapter(private val list: List<Drink>, private val itemClicked : (View, Drink) -> Unit) :
     RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,7 +41,7 @@ class SearchAdapter(private val list: List<Drink>, private val listener: Recycle
             Picasso.get().load(fullDrinkUrl).into(itemView.iv_thumb)
 
             itemView.setOnClickListener {
-                listener.onCocktailItemClicked(it, list[position])
+                itemClicked(it, list[position])
             }
         }
     }

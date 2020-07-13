@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bartender.R
 import com.example.bartender.util.dummyDrink
@@ -13,7 +14,9 @@ import com.example.bartender.viewmodel.CocktailsViewModel
 import kotlinx.android.synthetic.main.favourites_fragment.*
 import kotlinx.android.synthetic.main.search_fragment.*
 
-class FavouritesFragment(val viewModel: CocktailsViewModel) : Fragment(), FavouritesRecyclerViewClickListener {
+class FavouritesFragment : Fragment(), FavouritesRecyclerViewClickListener {
+
+    private lateinit var viewModel : CocktailsViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.favourites_fragment, container, false)
@@ -21,6 +24,10 @@ class FavouritesFragment(val viewModel: CocktailsViewModel) : Fragment(), Favour
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel = activity?.run {
+            ViewModelProvider(this).get(CocktailsViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
 
         rv_favourites.layoutManager = LinearLayoutManager(this.context)
 

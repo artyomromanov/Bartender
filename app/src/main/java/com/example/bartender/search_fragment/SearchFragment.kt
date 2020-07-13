@@ -2,6 +2,7 @@ package com.example.bartender.search_fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Vibrator
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
@@ -16,6 +17,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bartender.R
 import com.example.bartender.database.SearchResult
@@ -26,8 +29,9 @@ import kotlinx.android.synthetic.main.search_item.view.*
 import java.util.*
 
 
-class SearchFragment(val viewModel : CocktailsViewModel) : Fragment(), RecyclerViewClickListener {
+class SearchFragment : Fragment() {
 
+    private lateinit var viewModel : CocktailsViewModel
     var currentQuery = ""
     private var currentItemSelected: View? = null
 
@@ -39,6 +43,10 @@ class SearchFragment(val viewModel : CocktailsViewModel) : Fragment(), RecyclerV
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel = activity?.run {
+            ViewModelProvider(this).get(CocktailsViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
 
         rv_search.layoutManager = LinearLayoutManager(this.context)
         rv_suggestions.layoutManager = LinearLayoutManager(this.context)
@@ -58,11 +66,7 @@ class SearchFragment(val viewModel : CocktailsViewModel) : Fragment(), RecyclerV
                 if (it.isNotEmpty()) {
                     with(rv_suggestions) {
                         if(search_bar == null) println("OMG")
-                        adapter = SuggestionsAdapter(
-                            highlightSearchMatch(
-                                it, search_bar?.query.toString()
-                            ), this@SearchFragment
-                        )
+                        adapter = SuggestionsAdapter(highlightSearchMatch(it, search_bar?.query.toString())) { drink -> onSuggestionItemClicked(drink)}
                         adapter?.notifyDataSetChanged()
                         scheduleLayoutAnimation()
                         showSuggestions()
@@ -75,7 +79,7 @@ class SearchFragment(val viewModel : CocktailsViewModel) : Fragment(), RecyclerV
             //Network call call to retrieve search query and save to DB on success
             getSearchResultsLiveData().observe(viewLifecycleOwner, Observer {
                 with(rv_search) {
-                    adapter = SearchAdapter(it, this@SearchFragment)
+                    adapter = SearchAdapter(it) { view, drink -> onCocktailItemClicked(view, drink)}
                     adapter?.notifyDataSetChanged()
                     scheduleLayoutAnimation()
                 }
@@ -107,7 +111,7 @@ class SearchFragment(val viewModel : CocktailsViewModel) : Fragment(), RecyclerV
         }
 
        viewModel.getFavouritesDataSaveSuccess().observe(viewLifecycleOwner, Observer {
-            if(it){
+                if(it){
                 Toast.makeText(this@SearchFragment.context, "Successfully added to favourites!", Toast.LENGTH_SHORT).show()
             }
         })
@@ -146,7 +150,7 @@ class SearchFragment(val viewModel : CocktailsViewModel) : Fragment(), RecyclerV
         }
     }
     //Contains the logic for menu selecting and deselecting menu items
-    override fun onCocktailItemClicked(view: View, drink: Drink) {
+    private fun onCocktailItemClicked(view: View, drink: Drink) {
 
         //If the clicked item is NOT the focused item
         if (view.holder_layout != currentItemSelected) {
@@ -164,7 +168,7 @@ class SearchFragment(val viewModel : CocktailsViewModel) : Fragment(), RecyclerV
         }
     }
 
-    override fun onSuggestionItemClicked(suggestion: String) {
+    private fun onSuggestionItemClicked(suggestion: String) {
         currentQuery = suggestion
         search_bar.setQuery(suggestion, true)
     }
