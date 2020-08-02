@@ -2,7 +2,6 @@ package com.example.bartender
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -11,7 +10,6 @@ import com.example.bartender.di.modules.viewmodels.CocktailsViewModelModule
 import com.example.bartender.util.MyApp
 import com.example.bartender.viewmodel.CocktailsViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.home_activity.*
 import javax.inject.Inject
 
 class HomeActivity : AppCompatActivity() {
