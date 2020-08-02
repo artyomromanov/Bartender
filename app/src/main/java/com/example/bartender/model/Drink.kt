@@ -1,4 +1,4 @@
-package com.example.bartender.search.model
+package com.example.bartender.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -35,4 +35,8 @@ data class Drink(
     val strIngredient5: String?,
     @SerializedName("strIngredient6")
     val strIngredient6: String?
-)
+) {
+    override fun toString(): String {
+        return strDrink ?: "No name found"
+    }
+}

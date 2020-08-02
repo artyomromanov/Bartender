@@ -1,6 +1,6 @@
-package com.example.bartender
+package com.example.bartender.util
 
-import com.example.bartender.search.model.Drink
+import com.example.bartender.model.Drink
 
 const val BASE_URL = "https://www.thecocktaildb.com/api/json/v1/1/"
 const val SEARCH_ENDPOINT = "search.php"

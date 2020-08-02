@@ -1,9 +1,11 @@
-package com.example.bartender
+package com.example.bartender.util
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import com.example.bartender.HomeActivity
+import com.example.bartender.R
 
 class SplashScreen : AppCompatActivity() {
 

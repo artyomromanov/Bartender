@@ -1,4 +1,4 @@
-package com.example.bartender.favourites.view
+package com.example.bartender.favourites_fragment
 
 import android.view.View
 

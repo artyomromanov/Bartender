@@ -1,4 +1,4 @@
-package com.example.bartender
+package com.example.bartender.util
 
 import android.app.Application
 import com.example.bartender.di.components.AppComponent

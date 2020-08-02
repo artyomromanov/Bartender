@@ -1,4 +1,4 @@
-package com.example.bartender.search.model
+package com.example.bartender.model
 
 
 import com.google.gson.annotations.SerializedName

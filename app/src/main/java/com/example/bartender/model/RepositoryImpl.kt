@@ -1,9 +1,15 @@
-package com.example.bartender.search.model
+package com.example.bartender.model
 
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/model/RepositorySearchImpl.kt
 import com.example.bartender.repository.RepositoryContract
 import com.example.bartender.repository.database.CocktailDatabase
 import com.example.bartender.repository.database.SearchResult
 import com.example.bartender.repository.network.CocktailsClient
+=======
+import com.example.bartender.Repository
+import com.example.bartender.database.CocktailDatabase
+import com.example.bartender.database.SearchResult
+>>>>>>> develop:app/src/main/java/com/example/bartender/model/RepositoryImpl.kt
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers

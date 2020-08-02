@@ -1,7 +1,12 @@
 package com.example.bartender.di.modules
 
+<<<<<<< HEAD
 import com.example.bartender.BASE_URL
 import com.example.bartender.repository.network.CocktailsClient
+=======
+import com.example.bartender.util.BASE_URL
+import com.example.bartender.model.CocktailsClient
+>>>>>>> develop
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient

@@ -1,11 +1,11 @@
-package com.example.bartender.favourites.view
+package com.example.bartender.favourites_fragment
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bartender.R
-import com.example.bartender.search.model.Drink
+import com.example.bartender.model.Drink
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.favourites_item.view.*
 

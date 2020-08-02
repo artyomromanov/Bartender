@@ -1,7 +1,8 @@
-package com.example.bartender.search.view
+package com.example.bartender.search_fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Vibrator
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
@@ -16,9 +17,11 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.bartender.MyApp
 import com.example.bartender.R
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/search/view/SearchFragment.kt
 import com.example.bartender.di.components.DaggerSearchViewModelComponent
 import com.example.bartender.repository.database.SearchResult
 import com.example.bartender.di.modules.viewmodels.FavouritesViewModelModule
@@ -39,7 +42,19 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
     @Inject
     lateinit var favouritesViewModel: FavouritesViewModel
+=======
+import com.example.bartender.database.SearchResult
+import com.example.bartender.model.Drink
+import com.example.bartender.viewmodel.CocktailsViewModel
+import kotlinx.android.synthetic.main.search_fragment.*
+import kotlinx.android.synthetic.main.search_item.view.*
+import java.util.*
 
+
+class SearchFragment : Fragment() {
+>>>>>>> develop:app/src/main/java/com/example/bartender/search_fragment/SearchFragment.kt
+
+    private lateinit var viewModel : CocktailsViewModel
     var currentQuery = ""
     var favourites = mutableSetOf<String>()
     private var currentItemSelected: View? = null
@@ -53,16 +68,18 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = activity?.run {
+            ViewModelProvider(this).get(CocktailsViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+
         rv_search.layoutManager = LinearLayoutManager(this.context)
         rv_suggestions.layoutManager = LinearLayoutManager(this.context)
 
         initializeSearchView()
 
-        initializeViewModels()
-
         recyclerViewScrollListener()
 
-        with(searchViewModel) {
+        with(viewModel) {
 
             //Initial call to database to show previous searches
             getSuggestions()
@@ -72,7 +89,12 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
                 if (it.isNotEmpty()) {
                     with(rv_suggestions) {
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/search/view/SearchFragment.kt
                         adapter = SuggestionsAdapter(highlightSearchMatch(it, currentQuery), this@SearchFragment)
+=======
+                        if(search_bar == null) println("OMG")
+                        adapter = SuggestionsAdapter(highlightSearchMatch(it, search_bar?.query.toString())) { drink -> onSuggestionItemClicked(drink)}
+>>>>>>> develop:app/src/main/java/com/example/bartender/search_fragment/SearchFragment.kt
                         adapter?.notifyDataSetChanged()
                         scheduleLayoutAnimation()
                         showSuggestions()
@@ -85,11 +107,15 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
             //Network call call to retrieve search query and save to DB on success
             getSearchResultsLiveData().observe(viewLifecycleOwner, Observer {
                 with(rv_search) {
-                    adapter = SearchAdapter(it, this@SearchFragment)
+                    adapter = SearchAdapter(it) { view, drink -> onCocktailItemClicked(view, drink)}
                     adapter?.notifyDataSetChanged()
                     scheduleLayoutAnimation()
                 }
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/search/view/SearchFragment.kt
                 searchViewModel.saveCurrentSearchResult(SearchResult(currentQuery, it))
+=======
+                viewModel.saveCurrentSearchResult(SearchResult(search_bar.query.toString().toLowerCase(Locale.ROOT).trim(), it))
+>>>>>>> develop:app/src/main/java/com/example/bartender/search_fragment/SearchFragment.kt
                 status(2)
             })
 
@@ -116,6 +142,7 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
             })
         }
 
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/search/view/SearchFragment.kt
         with(favouritesViewModel) {
 
             //Get Favourites for interactive search list
@@ -126,6 +153,13 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
                     favourites.add(item.idDrink)
                 }
             })
+=======
+       viewModel.getFavouritesDataSaveSuccess().observe(viewLifecycleOwner, Observer {
+                if(it){
+                Toast.makeText(this@SearchFragment.context, "Successfully added to favourites!", Toast.LENGTH_SHORT).show()
+            }
+        })
+>>>>>>> develop:app/src/main/java/com/example/bartender/search_fragment/SearchFragment.kt
 
             getFavouritesDataSaveSuccess().observe(viewLifecycleOwner, Observer {
                 if (it) {
@@ -136,6 +170,7 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
             })
         }
     }
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/search/view/SearchFragment.kt
 
     private fun initializeViewModels() {
         DaggerSearchViewModelComponent
@@ -167,6 +202,22 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
             } else {
                 isAdded = false
                 search_btn_add.text = context.getString(R.string.search_btn_text_add)
+=======
+
+    //Plays the correct animation for select or deselect item in the search list
+    private fun selectMenuItem(view: View, select: Boolean, drink: Drink? = null) {
+        if(select){
+            with(view) {
+                submenu_layout.visibility = View.VISIBLE
+                main_menu_layout.animation = AnimationUtils.loadAnimation(context, R.anim.main_menu_animation_collapse)
+                submenu_layout.animation = AnimationUtils.loadAnimation(context, R.anim.submenu_item_animation_fade_in)
+
+                submenu_layout.search_btn_add.setOnClickListener {
+                    if (drink != null) {
+                        viewModel.addFavourite(drink)
+                    }
+                }
+>>>>>>> develop:app/src/main/java/com/example/bartender/search_fragment/SearchFragment.kt
             }
 
             submenu_layout.search_btn_add.setOnClickListener {
@@ -204,7 +255,7 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
     }
 
     //Contains the logic for menu selecting and deselecting menu items
-    override fun onCocktailItemClicked(view: View, drink: Drink) {
+    private fun onCocktailItemClicked(view: View, drink: Drink) {
 
         //If the clicked item is NOT the focused item
         if (view.holder_layout != currentItemSelected) {
@@ -222,9 +273,15 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
         }
     }
 
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/search/view/SearchFragment.kt
     override fun onSuggestionItemClicked(suggestion: String) {
         currentQuery = suggestion.trim()
         search_field.setQuery(suggestion, true)
+=======
+    private fun onSuggestionItemClicked(suggestion: String) {
+        currentQuery = suggestion
+        search_bar.setQuery(suggestion, true)
+>>>>>>> develop:app/src/main/java/com/example/bartender/search_fragment/SearchFragment.kt
     }
 
     //Contains the logic for searchView
@@ -237,7 +294,11 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String): Boolean {
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/search/view/SearchFragment.kt
                     searchViewModel.getSearchResults(query.trim())
+=======
+                    viewModel.getSearchResults(query)
+>>>>>>> develop:app/src/main/java/com/example/bartender/search_fragment/SearchFragment.kt
                     status(1)
                     showSuggestions(false)
                     return true
@@ -245,11 +306,20 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
                 override fun onQueryTextChange(newText: String): Boolean {
 
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/search/view/SearchFragment.kt
                     //Get new suggestion data, unless just navigated from one
                     if (newText != currentQuery) {
                         currentQuery = newText.trim()
                         searchViewModel.getSuggestions(currentQuery)
                     }
+=======
+                    if (newText.isBlank()) {
+                        //hide search results if query is empty
+                        rv_search.visibility = View.GONE
+                    }
+                    //Get new suggestion data, unless just navigated from one
+                    if (newText != currentQuery) viewModel.getSuggestions(newText)
+>>>>>>> develop:app/src/main/java/com/example/bartender/search_fragment/SearchFragment.kt
                     return true
                 }
             })
@@ -323,7 +393,11 @@ class SearchFragment : Fragment(), RecyclerViewClickListener {
 
                 search_btn_retry.setOnClickListener {
 
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/search/view/SearchFragment.kt
                     searchViewModel.getSearchResults(search_field.query.toString())
+=======
+                    viewModel.getSearchResults(search_bar.query.toString())
+>>>>>>> develop:app/src/main/java/com/example/bartender/search_fragment/SearchFragment.kt
                     status(1)
 
                 }

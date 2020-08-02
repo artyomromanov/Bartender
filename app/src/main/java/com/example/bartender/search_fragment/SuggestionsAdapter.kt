@@ -1,4 +1,4 @@
-package com.example.bartender.search.view
+package com.example.bartender.search_fragment
 
 import android.text.SpannableString
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bartender.R
 import kotlinx.android.synthetic.main.suggestion_item.view.*
 
-class SuggestionsAdapter(private val list: List<SpannableString>, private val listener: RecyclerViewClickListener) :
+class SuggestionsAdapter(private val list: List<SpannableString>, private val suggestionClicked : (String) -> Unit) :
     RecyclerView.Adapter<SuggestionsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,7 +37,7 @@ class SuggestionsAdapter(private val list: List<SpannableString>, private val li
 
             itemView.setOnClickListener {
 
-                listener.onSuggestionItemClicked(list[position].toString())
+                suggestionClicked(list[position].toString())
 
             }
 

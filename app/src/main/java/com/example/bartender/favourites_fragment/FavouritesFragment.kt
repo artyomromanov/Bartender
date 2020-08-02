@@ -1,4 +1,4 @@
-package com.example.bartender.favourites.view
+package com.example.bartender.favourites_fragment
 
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
@@ -7,24 +7,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.bartender.MyApp
 import com.example.bartender.R
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/favourites/view/FavouritesFragment.kt
 import com.example.bartender.di.components.DaggerFavouritesViewModelComponent
 import com.example.bartender.di.modules.viewmodels.FavouritesViewModelModule
 import com.example.bartender.dummyDrink
 import com.example.bartender.favourites.model.RandomDrink
 import com.example.bartender.favourites.viewmodel.FavouritesViewModel
 import com.squareup.picasso.Picasso
+=======
+import com.example.bartender.util.dummyDrink
+import com.example.bartender.viewmodel.CocktailsViewModel
+>>>>>>> develop:app/src/main/java/com/example/bartender/favourites_fragment/FavouritesFragment.kt
 import kotlinx.android.synthetic.main.favourites_fragment.*
 import kotlinx.android.synthetic.main.search_fragment.*
-import javax.inject.Inject
 
 
 class FavouritesFragment : Fragment(), FavouritesRecyclerViewClickListener {
 
-    @Inject
-    lateinit var favouritesViewModel: FavouritesViewModel
+    private lateinit var viewModel : CocktailsViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.favourites_fragment, container, false)
@@ -33,17 +36,29 @@ class FavouritesFragment : Fragment(), FavouritesRecyclerViewClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = activity?.run {
+            ViewModelProvider(this).get(CocktailsViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+
         rv_favourites.layoutManager = LinearLayoutManager(this.context)
 
-        initializeViewModel()
-
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/favourites/view/FavouritesFragment.kt
         with(favouritesViewModel){
+=======
+        viewModel.addFavourite(dummyDrink)
+>>>>>>> develop:app/src/main/java/com/example/bartender/favourites_fragment/FavouritesFragment.kt
 
             addFavourite(dummyDrink)
 
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/favourites/view/FavouritesFragment.kt
             status(1)
 
             getFavourites()
+=======
+        viewModel.getFavourites()
+
+        viewModel.getFavouritesData().observe(viewLifecycleOwner, Observer {
+>>>>>>> develop:app/src/main/java/com/example/bartender/favourites_fragment/FavouritesFragment.kt
 
             getFavouritesData().observe(viewLifecycleOwner, Observer {
 
@@ -63,9 +78,13 @@ class FavouritesFragment : Fragment(), FavouritesRecyclerViewClickListener {
                     bind(it)
             })
 
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/favourites/view/FavouritesFragment.kt
             getRandomCocktailDataError().observe(viewLifecycleOwner, Observer {
                 favourites_tv_error.text = it
             })
+=======
+        viewModel.getFavouritesDataError().observe(viewLifecycleOwner, Observer {
+>>>>>>> develop:app/src/main/java/com/example/bartender/favourites_fragment/FavouritesFragment.kt
 
             favourites_random_btn_get.setOnClickListener {
                 getRandomCocktail()
@@ -95,6 +114,7 @@ class FavouritesFragment : Fragment(), FavouritesRecyclerViewClickListener {
 
     }
 
+<<<<<<< HEAD:app/src/main/java/com/example/bartender/favourites/view/FavouritesFragment.kt
     private fun initializeViewModel() {
         DaggerFavouritesViewModelComponent
             .builder()
@@ -104,6 +124,8 @@ class FavouritesFragment : Fragment(), FavouritesRecyclerViewClickListener {
             .injectFavouritesFragment(this)
     }
 
+=======
+>>>>>>> develop:app/src/main/java/com/example/bartender/favourites_fragment/FavouritesFragment.kt
     private fun status(state: Int) {
 
         when (state) {
@@ -135,7 +157,7 @@ class FavouritesFragment : Fragment(), FavouritesRecyclerViewClickListener {
 
                 favourites_btn_retry.setOnClickListener {
 
-                    favouritesViewModel.getFavourites()
+                    viewModel.getFavourites()
                     status(1)
 
                 }
