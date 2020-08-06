@@ -76,14 +76,12 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
-<<<<<<< HEAD
     //Exo
     implementation "com.google.android.exoplayer:exoplayer:$exo_version"
-=======
+
     //Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
->>>>>>> develop
 
     //TESTING//
 
